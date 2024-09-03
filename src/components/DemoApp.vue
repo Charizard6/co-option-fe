@@ -260,7 +260,7 @@ export default {
       calendarApi.removeAllEvents()
 
       fetch(
-        `https://www.googleapis.com/calendar/v3/calendars/yyh6066@gmail.com/events?key=AIzaSyAuwZFHrGAIap_XuVWCy4OEtYxwJQSjfzo&timeMin=${start}&timeMax=${end}`
+        `https://www.googleapis.com/calendar/v3/calendars/yyh6066@gmail.com/events?key=구글apikey&timeMin=${start}&timeMax=${end}`
       )
         .then((response) => response.json())
         .then((data) => {
