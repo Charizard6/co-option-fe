@@ -1,34 +1,5 @@
 <template>
   <div class="demo-app calendar-page">
-    <div class="demo-app-sidebar">
-      <!-- <div class="demo-app-sidebar-section">
-        <h2>Instructions</h2>
-        <ul>
-          <li>Select dates and you will be prompted to create a new event</li>
-          <li>Drag, drop, and resize events</li>
-          <li>Click an event to delete it</li>
-        </ul>
-      </div> -->
-      <!-- <div class="demo-app-sidebar-section">
-        <label>
-          <input
-            type="checkbox"
-            :checked="calendarOptions.weekends"
-            @change="handleWeekendsToggle"
-          />
-          toggle weekends
-        </label>
-      </div> -->
-      <!-- <div class="demo-app-sidebar-section">
-        <h2>All Events ({{ currentEvents.length }})</h2>
-        <ul>
-          <li v-for="event in currentEvents" :key="event.id">
-            <b>{{ event.startStr }}</b>
-            <i>{{ event.title }}</i>
-          </li>
-        </ul>
-      </div> -->
-    </div>
     <div class="demo-app-main">
       <FullCalendar class="demo-app-calendar" :options="calendarOptions" ref="fullCalendar">
         <template v-slot:eventContent="arg">
@@ -37,13 +8,36 @@
         </template>
       </FullCalendar>
     </div>
+    <div class="event-details-sidebar">
+      <h2>'Event Details'</h2>
+      <label>
+        Title:
+        <input v-model="selectedEvent.title" type="text" :readonly />
+      </label>
+      <label>
+        Description:
+        <textarea v-model="selectedEvent.description" :readonly></textarea>
+      </label>
+      <label>
+        Start Date:
+        <input v-model="selectedEvent.start" type="date" :readonly />
+      </label>
+      <label>
+        End Date:
+        <input v-model="selectedEvent.end" type="date" :readonly />
+      </label>
+      <div v-if="selectedEvent.id">
+        <button @click="deleteEvent">Delete</button>
+        <button @click="resetForm">Close</button>
+      </div>
+      <div v-else>
+        <button @click="createEvent">Create</button>
+        <button @click="resetForm">Cancel</button>
+      </div>
+    </div>
     <EventPopup
       :visible="showEventForm"
-      :isReadOnly="isReadOnly"
-      :initialTitle="initialTitle"
-      :initialDescription="initialDescription"
-      :initialStartDate="initialStartDate"
-      :initialEndDate="initialEndDate"
+      :isReadOnly="false"
       @submit="submitEventForm"
       @cancel="cancelEventForm"
     />
@@ -56,13 +50,13 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import googleCalendarPlugin from '@fullcalendar/google-calendar'
-import EventPopup from './eventPopup.vue' // eventPopup.vue 파일을 가져옵니다.
+import EventPopup from './eventPopup.vue'
 
 export default {
   name: 'CalendarPage',
   components: {
     FullCalendar,
-    EventPopup // 등록
+    EventPopup
   },
   data() {
     return {
@@ -74,37 +68,33 @@ export default {
           right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
         initialView: 'dayGridMonth',
-        initialEvents: [], // 화면에 표시할 초기 이벤트를 비워둠
+        initialEvents: [],
         editable: true,
         selectable: true,
         selectMirror: true,
         dayMaxEvents: true,
         weekends: true,
-        // events 옵션을 주석 처리하여 `fetchEventsForCurrentMonth` 함수에서만 이벤트를 관리
-        // events: {
-        //   googleCalendarId: 'yyh6066@gmail.com'
-        // },
         select: this.handleDateSelect,
         eventClick: this.handleEventClick,
         eventsSet: this.handleEvents
       },
       currentEvents: [],
-      showEventForm: false, // 팝업 창을 제어하는 변수
+      showEventForm: false,
+      selectedEvent: {
+        id: null,
+        title: '',
+        description: '',
+        start: '',
+        end: ''
+      },
       selectedDateRange: null
     }
   },
   methods: {
-    handleWeekendsToggle() {
-      this.calendarOptions.weekends = !this.calendarOptions.weekends
-    },
     handleDateSelect(selectInfo) {
       this.selectedDateRange = selectInfo
       this.showEventForm = true
-      this.isReadOnly = false // 작성 모드로 설정
-      this.initialTitle = '' // 빈 값으로 초기화
-      this.initialDescription = '' // 빈 값으로 초기화
-      this.initialStartDate = '' // 빈 값으로 초기화
-      this.initialEndDate = '' // 빈 값으로 초기화
+      this.resetForm()
     },
     async submitEventForm(eventData) {
       const { startStr, endStr, view } = this.selectedDateRange
@@ -145,37 +135,122 @@ export default {
             console.log('Event created:', eventData)
             alert('이벤트가 구글 캘린더에 생성되었습니다!')
 
-            calendarApi.removeAllEvents() // 기존 이벤트 제거
-            this.fetchEventsForCurrentMonth() // 등록 후 구글 캘린더와 동기화
+            calendarApi.removeAllEvents()
+            this.fetchEventsForCurrentMonth()
           } else {
             console.error('이벤트 생성 오류:', response.statusText, response.status)
             alert('이벤트 생성에 실패했습니다. 다시 시도해주세요.')
           }
         }
 
-        this.tokenClient.requestAccessToken() // 액세스 토큰 요청
+        this.tokenClient.requestAccessToken()
       }
 
-      this.showEventForm = false // 폼을 숨깁니다.
+      this.showEventForm = false
     },
     cancelEventForm() {
-      this.showEventForm = false // 폼을 숨깁니다.
+      this.showEventForm = false
     },
     handleEventClick(clickInfo) {
       const event = clickInfo.event
-      this.showEventForm = true
-      this.isReadOnly = true // 읽기 전용 모드로 설정
-      this.initialTitle = event.title
-      this.initialDescription = event.extendedProps.description || ''
-      this.initialStartDate = event.start.toISOString().split('T')[0]
-      this.initialEndDate = event.end
-        ? event.end.toISOString().split('T')[0]
-        : this.initialStartDate
+      this.selectedEvent = {
+        id: event.id,
+        title: event.title,
+        description: event.extendedProps.description || '',
+        start: event.start.toISOString().split('T')[0],
+        end: event.end
+          ? event.end.toISOString().split('T')[0]
+          : event.start.toISOString().split('T')[0]
+      }
+    },
+    createEvent() {
+      if (!this.selectedEvent.title) {
+        alert('Title is required')
+        return
+      }
+
+      const calendarApi = this.$refs.fullCalendar.getApi()
+
+      const newEvent = {
+        title: this.selectedEvent.title,
+        description: this.selectedEvent.description,
+        start: this.selectedEvent.start,
+        end: this.selectedEvent.end
+      }
+
+      this.tokenClient.callback = async (tokenResponse) => {
+        if (tokenResponse.error !== undefined) {
+          console.error('Token error:', tokenResponse.error)
+          return
+        }
+
+        const response = await fetch(
+          'https://www.googleapis.com/calendar/v3/calendars/yyh6066@gmail.com/events',
+          {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${tokenResponse.access_token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newEvent)
+          }
+        )
+
+        if (response.ok) {
+          console.log('Event created successfully')
+          calendarApi.addEvent(newEvent)
+          this.resetForm()
+        } else {
+          console.error('Failed to create event:', response)
+        }
+      }
+
+      this.tokenClient.requestAccessToken()
+    },
+    deleteEvent() {
+      if (!this.selectedEvent.id) return
+
+      const calendarApi = this.$refs.fullCalendar.getApi()
+
+      this.tokenClient.callback = async (tokenResponse) => {
+        if (tokenResponse.error !== undefined) {
+          console.error('Token error:', tokenResponse.error)
+          return
+        }
+
+        const response = await fetch(
+          `https://www.googleapis.com/calendar/v3/calendars/yyh6066@gmail.com/events/${this.selectedEvent.id}`,
+          {
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${tokenResponse.access_token}`
+            }
+          }
+        )
+
+        if (response.ok) {
+          console.log('Event deleted successfully')
+          calendarApi.getEventById(this.selectedEvent.id).remove()
+          this.resetForm()
+        } else {
+          console.error('Failed to delete event:', response)
+        }
+      }
+
+      this.tokenClient.requestAccessToken()
+    },
+    resetForm() {
+      this.selectedEvent = {
+        id: null,
+        title: '',
+        description: '',
+        start: '',
+        end: ''
+      }
     },
     handleEvents(events) {
       this.currentEvents = events
-      console.log('현재 이벤트:', events) // 이벤트를 콘솔에 출력
-      //let eventTitles = events.map((event) => event.title).join('\n')
+      console.log('현재 이벤트:', events)
     },
     fetchEventsForCurrentMonth() {
       const calendarApi = this.$refs.fullCalendar.getApi()
@@ -197,7 +272,7 @@ export default {
               calendarApi.addEvent({
                 id: event.id,
                 title: event.summary,
-                description: event.description, // 설명 추가
+                description: event.description,
                 start: event.start.dateTime || event.start.date,
                 end: event.end.dateTime || event.end.date,
                 allDay: !event.start.dateTime
@@ -217,7 +292,7 @@ export default {
         scope: 'https://www.googleapis.com/auth/calendar.events'
       })
 
-      this.fetchEventsForCurrentMonth() // 구글 캘린더 이벤트를 불러옵니다.
+      this.fetchEventsForCurrentMonth()
     }
 
     if (typeof google !== 'undefined' && google.accounts && google.accounts.oauth2) {
@@ -229,29 +304,10 @@ export default {
 }
 </script>
 
-<style lang="css">
-h2 {
-  margin: 0;
-  font-size: 16px;
-}
-
-ul {
-  margin: 0;
-  padding: 0 0 0 1.5em;
-}
-
-li {
-  margin: 1.5em 0;
-  padding: 0;
-}
-
-b {
-  margin-right: 3px;
-}
-
+<style scoped>
 .demo-app {
   display: flex;
-  min-height: 100%;
+  height: 100%;
   font-family:
     Arial,
     Helvetica Neue,
@@ -260,24 +316,39 @@ b {
   font-size: 14px;
 }
 
-.demo-app-sidebar {
-  width: 300px;
-  line-height: 1.5;
-  background: #eaf9ff;
-  border-right: 1px solid #d3e2e8;
-}
-
-.demo-app-sidebar-section {
-  padding: 2em;
-}
-
 .demo-app-main {
   flex-grow: 1;
-  padding: 3em;
+  padding: 1em;
 }
 
-.fc {
-  max-width: 1100px;
-  margin: 0 auto;
+.event-details-sidebar {
+  width: 300px;
+  padding: 1em;
+  background: #f5f5f5;
+  border-left: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+}
+
+.event-details-sidebar h2 {
+  margin-top: 0;
+}
+
+.event-details-sidebar label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.event-details-sidebar input,
+.event-details-sidebar textarea {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  margin-top: 5px;
+}
+
+.event-details-sidebar button {
+  margin-right: 10px;
+  margin-top: 10px;
 }
 </style>
