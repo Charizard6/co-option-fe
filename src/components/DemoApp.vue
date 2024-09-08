@@ -349,6 +349,32 @@ export default {
           console.log('현재 캘린더의 모든 이벤트:', calendarApi.getEvents())
         })
         .catch((error) => console.error('이벤트 가져오기 오류:', error))
+    },
+    handleRightClickEvent(info) {
+      const eventElement = info.el
+
+      eventElement.addEventListener('contextmenu', (e) => {
+        e.preventDefault() // 우클릭 기본 동작 방지
+        this.isRightClick = true // 우클릭 시 우측 사이드바의 참가 요청 폼 활성화
+        this.selectedEventId = info.event.id // 선택한 이벤트 ID 저장
+      })
+    },
+    sendRequest() {
+      if (this.selectedRecipients.length === 0 || this.requestMessage.trim() === '') {
+        alert('수신자와 요청 내용을 입력하세요.')
+        return
+      }
+
+      const payload = {
+        eventId: this.selectedEventId,
+        recipients: this.selectedRecipients,
+        message: this.requestMessage
+      }
+
+      const serverUrl = 'https://example.com/api/send-request' // 서버 URL 임시 설정
+
+      // 여기에 서버 전송 로직 추가
+      console.log('상신 데이터:', payload)
     }
   },
   mounted() {
