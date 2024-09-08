@@ -193,19 +193,22 @@ export default {
           : event.start.toISOString().split('T')[0]
       }
     },
-    createEvent() {
-      if (!this.selectedEvent.title) {
-        alert('Title is required')
-        return
-      }
-
+    editEvent() {
+      // 수정 모드로 전환
+      this.isEditing = true
+    },
+    async saveEvent() {
+      // 수정된 이벤트를 저장
       const calendarApi = this.$refs.fullCalendar.getApi()
-
-      const newEvent = {
-        title: this.selectedEvent.title,
+      const updatedEvent = {
+        summary: this.selectedEvent.title,
         description: this.selectedEvent.description,
-        start: this.selectedEvent.start,
-        end: this.selectedEvent.end
+        start: {
+          date: this.selectedEvent.start
+        },
+        end: {
+          date: addOneDay(this.selectedEvent.end)
+        }
       }
 
       this.tokenClient.callback = async (tokenResponse) => {
@@ -215,23 +218,31 @@ export default {
         }
 
         const response = await fetch(
-          'https://www.googleapis.com/calendar/v3/calendars/yyh6066@gmail.com/events',
+          `https://www.googleapis.com/calendar/v3/calendars/yyh6066@gmail.com/events/${this.selectedEvent.id}`,
           {
-            method: 'POST',
+            method: 'PUT',
             headers: {
               Authorization: `Bearer ${tokenResponse.access_token}`,
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify(newEvent)
+            body: JSON.stringify(updatedEvent)
           }
         )
 
         if (response.ok) {
-          console.log('Event created successfully')
-          calendarApi.addEvent(newEvent)
+          console.log('Event updated successfully')
+          alert('이벤트가 수정되었습니다!')
+          calendarApi.getEventById(this.selectedEvent.id).remove()
+          calendarApi.addEvent({
+            id: this.selectedEvent.id,
+            title: this.selectedEvent.title,
+            description: this.selectedEvent.description,
+            start: this.selectedEvent.start,
+            end: addOneDay(this.selectedEvent.end)
+          })
           this.resetForm()
         } else {
-          console.error('Failed to create event:', response)
+          console.error('Failed to update event:', response)
         }
       }
 
