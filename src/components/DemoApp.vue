@@ -95,7 +95,8 @@ export default {
         weekends: true,
         select: this.handleDateSelect,
         eventClick: this.handleEventClick,
-        eventsSet: this.handleEvents
+        eventsSet: this.handleEvents,
+        eventDidMount: this.handleRightClickEvent // 우클릭 이벤트 추가
       },
       currentEvents: [],
       showEventForm: false,
