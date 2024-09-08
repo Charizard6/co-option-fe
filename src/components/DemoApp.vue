@@ -406,7 +406,8 @@ export default {
 }
 
 .event-details-sidebar input,
-.event-details-sidebar textarea {
+.event-details-sidebar textarea,
+.event-details-sidebar select {
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
