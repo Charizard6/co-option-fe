@@ -8,33 +8,52 @@
         </template>
       </FullCalendar>
     </div>
-    <div class="event-details-sidebar">
-      <h2>'Event Details'</h2>
+    <div class="event-details-sidebar" v-if="isRightClick">
+      <!-- 우클릭한 경우 수신자 선택 폼과 요청 내용 폼 표시 -->
+      <h2>일정 참가 요청</h2>
+      <label>
+        수신자:
+        <select v-model="selectedRecipients" multiple>
+          <option v-for="recipient in recipients" :key="recipient.email" :value="recipient.email">
+            {{ recipient.name }}
+          </option>
+        </select>
+      </label>
+      <label>
+        요청내용:
+        <textarea v-model="requestMessage" placeholder="요청 내용을 입력하세요"></textarea>
+      </label>
+      <button @click="sendRequest">상신</button>
+    </div>
+
+    <div class="event-details-sidebar" v-if="!isRightClick">
+      <!-- 좌클릭한 경우 기존 Event Details 폼 표시 -->
+      <h2 v-if="!isEditing">Event Details</h2>
+      <h2 v-else>Edit Event</h2>
       <label>
         Title:
-        <input v-model="selectedEvent.title" type="text" :readonly />
+        <input v-model="selectedEvent.title" type="text" :readonly="!isEditing" />
       </label>
       <label>
         Description:
-        <textarea v-model="selectedEvent.description" :readonly></textarea>
+        <textarea v-model="selectedEvent.description" :readonly="!isEditing"></textarea>
       </label>
       <label>
         Start Date:
-        <input v-model="selectedEvent.start" type="date" :readonly />
+        <input v-model="selectedEvent.start" type="date" :readonly="!isEditing" />
       </label>
       <label>
         End Date:
-        <input v-model="selectedEvent.end" type="date" :readonly />
+        <input v-model="selectedEvent.end" type="date" :readonly="!isEditing" />
       </label>
       <div v-if="selectedEvent.id">
+        <button v-if="!isEditing" @click="editEvent">Edit</button>
+        <button v-else @click="saveEvent">Save</button>
         <button @click="deleteEvent">Delete</button>
-        <button @click="resetForm">Close</button>
-      </div>
-      <div v-else>
-        <button @click="createEvent">Create</button>
-        <button @click="resetForm">Cancel</button>
+        <button v-if="isEditing" @click="cancelEdit">Cancel</button>
       </div>
     </div>
+
     <EventPopup
       :visible="showEventForm"
       :isReadOnly="false"
@@ -51,6 +70,21 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import googleCalendarPlugin from '@fullcalendar/google-calendar'
 import EventPopup from './eventPopup.vue'
+
+const addOneDay = (dateString) => {
+  // 날짜 문자열을 Date 객체로 변환
+  const date = new Date(dateString)
+
+  // 하루(밀리초로 24시간)를 더함
+  date.setDate(date.getDate() + 1)
+
+  // yyyy-mm-dd 형식으로 변환해서 반환
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0') // 월은 0부터 시작하므로 +1
+  const day = String(date.getDate()).padStart(2, '0')
+
+  return `${year}-${month}-${day}`
+}
 
 export default {
   name: 'CalendarPage',
@@ -76,7 +110,8 @@ export default {
         weekends: true,
         select: this.handleDateSelect,
         eventClick: this.handleEventClick,
-        eventsSet: this.handleEvents
+        eventsSet: this.handleEvents,
+        eventDidMount: this.handleRightClickEvent // 우클릭 이벤트 추가
       },
       currentEvents: [],
       showEventForm: false,
@@ -87,7 +122,17 @@ export default {
         start: '',
         end: ''
       },
-      selectedDateRange: null
+      selectedDateRange: null,
+      isEditing: false, // 수정 상태 여부를 나타내는 변수 추가
+      isRightClick: false, // 우클릭 여부 플래그
+      selectedRecipients: [],
+      recipients: [
+        { name: 'John Doe', email: 'john.doe@example.com' },
+        { name: 'Jane Smith', email: 'jane.smith@example.com' },
+        { name: 'Alice Johnson', email: 'alice.johnson@example.com' }
+      ],
+      requestMessage: '',
+      selectedEventId: null // 선택된 이벤트 ID
     }
   },
   methods: {
@@ -97,6 +142,7 @@ export default {
       this.resetForm()
     },
     async submitEventForm(eventData) {
+      //일정 생성
       const { startStr, endStr, view } = this.selectedDateRange
       let calendarApi = view.calendar
 
@@ -152,30 +198,35 @@ export default {
       this.showEventForm = false
     },
     handleEventClick(clickInfo) {
+      this.isRightClick = false //우클릭시 화면 비
       const event = clickInfo.event
       this.selectedEvent = {
         id: event.id,
         title: event.title,
         description: event.extendedProps.description || '',
-        start: event.start.toISOString().split('T')[0],
+        start: addOneDay(event.start.toISOString().split('T')[0]),
         end: event.end
           ? event.end.toISOString().split('T')[0]
-          : event.start.toISOString().split('T')[0]
+          : addOneDay(event.start.toISOString().split('T')[0])
       }
+      this.isEditing = false // 상세 보기 모드로 설정
     },
-    createEvent() {
-      if (!this.selectedEvent.title) {
-        alert('Title is required')
-        return
-      }
-
+    editEvent() {
+      // 수정 모드로 전환
+      this.isEditing = true
+    },
+    async saveEvent() {
+      // 수정된 이벤트를 저장
       const calendarApi = this.$refs.fullCalendar.getApi()
-
-      const newEvent = {
-        title: this.selectedEvent.title,
+      const updatedEvent = {
+        summary: this.selectedEvent.title,
         description: this.selectedEvent.description,
-        start: this.selectedEvent.start,
-        end: this.selectedEvent.end
+        start: {
+          date: this.selectedEvent.start
+        },
+        end: {
+          date: addOneDay(this.selectedEvent.end)
+        }
       }
 
       this.tokenClient.callback = async (tokenResponse) => {
@@ -185,29 +236,38 @@ export default {
         }
 
         const response = await fetch(
-          'https://www.googleapis.com/calendar/v3/calendars/yyh6066@gmail.com/events',
+          `https://www.googleapis.com/calendar/v3/calendars/yyh6066@gmail.com/events/${this.selectedEvent.id}`,
           {
-            method: 'POST',
+            method: 'PUT',
             headers: {
               Authorization: `Bearer ${tokenResponse.access_token}`,
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify(newEvent)
+            body: JSON.stringify(updatedEvent)
           }
         )
 
         if (response.ok) {
-          console.log('Event created successfully')
-          calendarApi.addEvent(newEvent)
+          console.log('Event updated successfully')
+          alert('이벤트가 수정되었습니다!')
+          calendarApi.getEventById(this.selectedEvent.id).remove()
+          calendarApi.addEvent({
+            id: this.selectedEvent.id,
+            title: this.selectedEvent.title,
+            description: this.selectedEvent.description,
+            start: this.selectedEvent.start,
+            end: addOneDay(this.selectedEvent.end)
+          })
           this.resetForm()
         } else {
-          console.error('Failed to create event:', response)
+          console.error('Failed to update event:', response)
         }
       }
 
       this.tokenClient.requestAccessToken()
     },
     deleteEvent() {
+      //일정 삭제
       if (!this.selectedEvent.id) return
 
       const calendarApi = this.$refs.fullCalendar.getApi()
@@ -239,6 +299,10 @@ export default {
 
       this.tokenClient.requestAccessToken()
     },
+    cancelEdit() {
+      // 수정 취소
+      this.isEditing = false
+    },
     resetForm() {
       this.selectedEvent = {
         id: null,
@@ -247,12 +311,14 @@ export default {
         start: '',
         end: ''
       }
+      this.isEditing = false // 수정 모드를 초기화
     },
     handleEvents(events) {
       this.currentEvents = events
       console.log('현재 이벤트:', events)
     },
     fetchEventsForCurrentMonth() {
+      //일정 가져오기
       const calendarApi = this.$refs.fullCalendar.getApi()
       const start = new Date(calendarApi.view.currentStart).toISOString()
       const end = new Date(calendarApi.view.currentEnd).toISOString()
@@ -283,6 +349,32 @@ export default {
           console.log('현재 캘린더의 모든 이벤트:', calendarApi.getEvents())
         })
         .catch((error) => console.error('이벤트 가져오기 오류:', error))
+    },
+    handleRightClickEvent(info) {
+      const eventElement = info.el
+
+      eventElement.addEventListener('contextmenu', (e) => {
+        e.preventDefault() // 우클릭 기본 동작 방지
+        this.isRightClick = true // 우클릭 시 우측 사이드바의 참가 요청 폼 활성화
+        this.selectedEventId = info.event.id // 선택한 이벤트 ID 저장
+      })
+    },
+    sendRequest() {
+      if (this.selectedRecipients.length === 0 || this.requestMessage.trim() === '') {
+        alert('수신자와 요청 내용을 입력하세요.')
+        return
+      }
+
+      const payload = {
+        eventId: this.selectedEventId,
+        recipients: this.selectedRecipients,
+        message: this.requestMessage
+      }
+
+      const serverUrl = 'https://example.com/api/send-request' // 서버 URL 임시 설정
+
+      // 여기에 서버 전송 로직 추가
+      console.log('상신 데이터:', payload)
     }
   },
   mounted() {
@@ -340,7 +432,8 @@ export default {
 }
 
 .event-details-sidebar input,
-.event-details-sidebar textarea {
+.event-details-sidebar textarea,
+.event-details-sidebar select {
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
