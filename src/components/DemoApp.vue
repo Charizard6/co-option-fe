@@ -8,33 +8,52 @@
         </template>
       </FullCalendar>
     </div>
-    <div class="event-details-sidebar">
-      <h2>'Event Details'</h2>
+    <div class="event-details-sidebar" v-if="isRightClick">
+      <!-- 우클릭한 경우 수신자 선택 폼과 요청 내용 폼 표시 -->
+      <h2>일정 참가 요청</h2>
+      <label>
+        수신자:
+        <select v-model="selectedRecipients" multiple>
+          <option v-for="recipient in recipients" :key="recipient.email" :value="recipient.email">
+            {{ recipient.name }}
+          </option>
+        </select>
+      </label>
+      <label>
+        요청내용:
+        <textarea v-model="requestMessage" placeholder="요청 내용을 입력하세요"></textarea>
+      </label>
+      <button @click="sendRequest">상신</button>
+    </div>
+
+    <div class="event-details-sidebar" v-if="!isRightClick">
+      <!-- 좌클릭한 경우 기존 Event Details 폼 표시 -->
+      <h2 v-if="!isEditing">Event Details</h2>
+      <h2 v-else>Edit Event</h2>
       <label>
         Title:
-        <input v-model="selectedEvent.title" type="text" :readonly />
+        <input v-model="selectedEvent.title" type="text" :readonly="!isEditing" />
       </label>
       <label>
         Description:
-        <textarea v-model="selectedEvent.description" :readonly></textarea>
+        <textarea v-model="selectedEvent.description" :readonly="!isEditing"></textarea>
       </label>
       <label>
         Start Date:
-        <input v-model="selectedEvent.start" type="date" :readonly />
+        <input v-model="selectedEvent.start" type="date" :readonly="!isEditing" />
       </label>
       <label>
         End Date:
-        <input v-model="selectedEvent.end" type="date" :readonly />
+        <input v-model="selectedEvent.end" type="date" :readonly="!isEditing" />
       </label>
       <div v-if="selectedEvent.id">
+        <button v-if="!isEditing" @click="editEvent">Edit</button>
+        <button v-else @click="saveEvent">Save</button>
         <button @click="deleteEvent">Delete</button>
-        <button @click="resetForm">Close</button>
-      </div>
-      <div v-else>
-        <button @click="createEvent">Create</button>
-        <button @click="resetForm">Cancel</button>
+        <button v-if="isEditing" @click="cancelEdit">Cancel</button>
       </div>
     </div>
+
     <EventPopup
       :visible="showEventForm"
       :isReadOnly="false"
