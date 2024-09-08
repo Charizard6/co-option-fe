@@ -107,7 +107,17 @@ export default {
         start: '',
         end: ''
       },
-      selectedDateRange: null
+      selectedDateRange: null,
+      isEditing: false, // 수정 상태 여부를 나타내는 변수 추가
+      isRightClick: false, // 우클릭 여부 플래그
+      selectedRecipients: [],
+      recipients: [
+        { name: 'John Doe', email: 'john.doe@example.com' },
+        { name: 'Jane Smith', email: 'jane.smith@example.com' },
+        { name: 'Alice Johnson', email: 'alice.johnson@example.com' }
+      ],
+      requestMessage: '',
+      selectedEventId: null // 선택된 이벤트 ID
     }
   },
   methods: {
