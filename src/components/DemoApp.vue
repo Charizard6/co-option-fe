@@ -142,6 +142,7 @@ export default {
       this.resetForm()
     },
     async submitEventForm(eventData) {
+      //일정 생성
       const { startStr, endStr, view } = this.selectedDateRange
       let calendarApi = view.calendar
 
@@ -266,6 +267,7 @@ export default {
       this.tokenClient.requestAccessToken()
     },
     deleteEvent() {
+      //일정 삭제
       if (!this.selectedEvent.id) return
 
       const calendarApi = this.$refs.fullCalendar.getApi()
@@ -297,6 +299,10 @@ export default {
 
       this.tokenClient.requestAccessToken()
     },
+    cancelEdit() {
+      // 수정 취소
+      this.isEditing = false
+    },
     resetForm() {
       this.selectedEvent = {
         id: null,
@@ -305,12 +311,14 @@ export default {
         start: '',
         end: ''
       }
+      this.isEditing = false // 수정 모드를 초기화
     },
     handleEvents(events) {
       this.currentEvents = events
       console.log('현재 이벤트:', events)
     },
     fetchEventsForCurrentMonth() {
+      //일정 가져오기
       const calendarApi = this.$refs.fullCalendar.getApi()
       const start = new Date(calendarApi.view.currentStart).toISOString()
       const end = new Date(calendarApi.view.currentEnd).toISOString()
