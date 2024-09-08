@@ -182,16 +182,18 @@ export default {
       this.showEventForm = false
     },
     handleEventClick(clickInfo) {
+      this.isRightClick = false //우클릭시 화면 비
       const event = clickInfo.event
       this.selectedEvent = {
         id: event.id,
         title: event.title,
         description: event.extendedProps.description || '',
-        start: event.start.toISOString().split('T')[0],
+        start: addOneDay(event.start.toISOString().split('T')[0]),
         end: event.end
           ? event.end.toISOString().split('T')[0]
-          : event.start.toISOString().split('T')[0]
+          : addOneDay(event.start.toISOString().split('T')[0])
       }
+      this.isEditing = false // 상세 보기 모드로 설정
     },
     editEvent() {
       // 수정 모드로 전환
