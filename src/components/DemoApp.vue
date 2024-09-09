@@ -13,11 +13,15 @@
       <h2>일정 참가 요청</h2>
       <label>
         수신자:
-        <select v-model="selectedRecipients" multiple>
-          <option v-for="recipient in recipients" :key="recipient.email" :value="recipient.email">
-            {{ recipient.name }}
-          </option>
-        </select>
+        <div>
+          <Multiselect
+            v-model="value"
+            :options="options"
+            :searchable="true"
+            :object="true"
+            mode="multiple"
+          />
+        </div>
       </label>
       <label>
         요청내용:
@@ -70,6 +74,7 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import googleCalendarPlugin from '@fullcalendar/google-calendar'
 import EventPopup from './eventPopup.vue'
+import Multiselect from '@vueform/multiselect'
 
 const addOneDay = (dateString) => {
   // 날짜 문자열을 Date 객체로 변환
@@ -85,12 +90,15 @@ const addOneDay = (dateString) => {
 
   return `${year}-${month}-${day}`
 }
+const url =
+  'https://www.googleapis.com/calendar/v3/calendars/2b785f150767e0395fddf90330cbda151ae7e2bd4d9368866d453bf5f3c16761@group.calendar.google.com/events'
 
 export default {
   name: 'CalendarPage',
   components: {
     FullCalendar,
-    EventPopup
+    EventPopup,
+    Multiselect
   },
   data() {
     return {
@@ -126,10 +134,15 @@ export default {
       isEditing: false, // 수정 상태 여부를 나타내는 변수 추가
       isRightClick: false, // 우클릭 여부 플래그
       selectedRecipients: [],
-      recipients: [
-        { name: 'John Doe', email: 'john.doe@example.com' },
-        { name: 'Jane Smith', email: 'jane.smith@example.com' },
-        { name: 'Alice Johnson', email: 'alice.johnson@example.com' }
+      // recipients: [
+      //   { name: 'John Doe', email: 'john.doe@example.com' },
+      //   { name: 'Jane Smith', email: 'jane.smith@example.com' },
+      //   { name: 'Alice Johnson', email: 'alice.johnson@example.com' }
+      // ], 기본 멀티셀렉트는 객체 배열이되지만 지금 추가한거는 단일
+      value: null,
+      options: [
+        { value: 'Java', label: 'Java' },
+        { value: 'JavaScript', label: 'JavaScript' }
       ],
       requestMessage: '',
       selectedEventId: null // 선택된 이벤트 ID
@@ -164,22 +177,21 @@ export default {
             return
           }
 
-          const response = await fetch(
-            'https://www.googleapis.com/calendar/v3/calendars/yyh6066@gmail.com/events',
-            {
-              method: 'POST',
-              headers: {
-                Authorization: `Bearer ${tokenResponse.access_token}`,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(event)
-            }
-          )
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${tokenResponse.access_token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(event)
+          })
 
           if (response.ok) {
             const eventData = await response.json()
             console.log('Event created:', eventData)
             alert('이벤트가 구글 캘린더에 생성되었습니다!')
+            //생성된 일정의 id
+            console.log('eventID', eventData.id)
 
             calendarApi.removeAllEvents()
             this.fetchEventsForCurrentMonth()
@@ -235,17 +247,14 @@ export default {
           return
         }
 
-        const response = await fetch(
-          `https://www.googleapis.com/calendar/v3/calendars/yyh6066@gmail.com/events/${this.selectedEvent.id}`,
-          {
-            method: 'PUT',
-            headers: {
-              Authorization: `Bearer ${tokenResponse.access_token}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(updatedEvent)
-          }
-        )
+        const response = await fetch(`${url}/${this.selectedEvent.id}`, {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${tokenResponse.access_token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(updatedEvent)
+        })
 
         if (response.ok) {
           console.log('Event updated successfully')
@@ -278,15 +287,12 @@ export default {
           return
         }
 
-        const response = await fetch(
-          `https://www.googleapis.com/calendar/v3/calendars/yyh6066@gmail.com/events/${this.selectedEvent.id}`,
-          {
-            method: 'DELETE',
-            headers: {
-              Authorization: `Bearer ${tokenResponse.access_token}`
-            }
+        const response = await fetch(`${url}/${this.selectedEvent.id}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${tokenResponse.access_token}`
           }
-        )
+        })
 
         if (response.ok) {
           console.log('Event deleted successfully')
@@ -396,52 +402,5 @@ export default {
 }
 </script>
 
-<style scoped>
-.demo-app {
-  display: flex;
-  height: 100%;
-  font-family:
-    Arial,
-    Helvetica Neue,
-    Helvetica,
-    sans-serif;
-  font-size: 14px;
-}
-
-.demo-app-main {
-  flex-grow: 1;
-  padding: 1em;
-}
-
-.event-details-sidebar {
-  width: 300px;
-  padding: 1em;
-  background: #f5f5f5;
-  border-left: 1px solid #ddd;
-  display: flex;
-  flex-direction: column;
-}
-
-.event-details-sidebar h2 {
-  margin-top: 0;
-}
-
-.event-details-sidebar label {
-  display: block;
-  margin-bottom: 10px;
-}
-
-.event-details-sidebar input,
-.event-details-sidebar textarea,
-.event-details-sidebar select {
-  width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
-  margin-top: 5px;
-}
-
-.event-details-sidebar button {
-  margin-right: 10px;
-  margin-top: 10px;
-}
-</style>
+<style lang="css" src="/src/css/demoAppVue.css"></style>
+<style src="@vueform/multiselect/themes/default.css"></style>
