@@ -13,11 +13,15 @@
       <h2>일정 참가 요청</h2>
       <label>
         수신자:
-        <select v-model="selectedRecipients" multiple>
-          <option v-for="recipient in recipients" :key="recipient.email" :value="recipient.email">
-            {{ recipient.name }}
-          </option>
-        </select>
+        <div>
+          <Multiselect
+            v-model="value"
+            :options="options"
+            :searchable="true"
+            :object="true"
+            mode="multiple"
+          />
+        </div>
       </label>
       <label>
         요청내용:
@@ -70,6 +74,7 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import googleCalendarPlugin from '@fullcalendar/google-calendar'
 import EventPopup from './eventPopup.vue'
+import Multiselect from '@vueform/multiselect'
 
 const addOneDay = (dateString) => {
   // 날짜 문자열을 Date 객체로 변환
@@ -85,12 +90,15 @@ const addOneDay = (dateString) => {
 
   return `${year}-${month}-${day}`
 }
+const url =
+  'https://www.googleapis.com/calendar/v3/calendars/2b785f150767e0395fddf90330cbda151ae7e2bd4d9368866d453bf5f3c16761@group.calendar.google.com/events'
 
 export default {
   name: 'CalendarPage',
   components: {
     FullCalendar,
-    EventPopup
+    EventPopup,
+    Multiselect
   },
   data() {
     return {
@@ -126,10 +134,15 @@ export default {
       isEditing: false, // 수정 상태 여부를 나타내는 변수 추가
       isRightClick: false, // 우클릭 여부 플래그
       selectedRecipients: [],
-      recipients: [
-        { name: 'John Doe', email: 'john.doe@example.com' },
-        { name: 'Jane Smith', email: 'jane.smith@example.com' },
-        { name: 'Alice Johnson', email: 'alice.johnson@example.com' }
+      // recipients: [
+      //   { name: 'John Doe', email: 'john.doe@example.com' },
+      //   { name: 'Jane Smith', email: 'jane.smith@example.com' },
+      //   { name: 'Alice Johnson', email: 'alice.johnson@example.com' }
+      // ], 기본 멀티셀렉트는 객체 배열이되지만 지금 추가한거는 단일
+      value: null,
+      options: [
+        { value: 'Java', label: 'Java' },
+        { value: 'JavaScript', label: 'JavaScript' }
       ],
       requestMessage: '',
       selectedEventId: null // 선택된 이벤트 ID
