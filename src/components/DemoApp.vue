@@ -177,22 +177,21 @@ export default {
             return
           }
 
-          const response = await fetch(
-            'https://www.googleapis.com/calendar/v3/calendars/yyh6066@gmail.com/events',
-            {
-              method: 'POST',
-              headers: {
-                Authorization: `Bearer ${tokenResponse.access_token}`,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(event)
-            }
-          )
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${tokenResponse.access_token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(event)
+          })
 
           if (response.ok) {
             const eventData = await response.json()
             console.log('Event created:', eventData)
             alert('이벤트가 구글 캘린더에 생성되었습니다!')
+            //생성된 일정의 id
+            console.log('eventID', eventData.id)
 
             calendarApi.removeAllEvents()
             this.fetchEventsForCurrentMonth()
@@ -248,17 +247,14 @@ export default {
           return
         }
 
-        const response = await fetch(
-          `https://www.googleapis.com/calendar/v3/calendars/yyh6066@gmail.com/events/${this.selectedEvent.id}`,
-          {
-            method: 'PUT',
-            headers: {
-              Authorization: `Bearer ${tokenResponse.access_token}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(updatedEvent)
-          }
-        )
+        const response = await fetch(`${url}/${this.selectedEvent.id}`, {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${tokenResponse.access_token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(updatedEvent)
+        })
 
         if (response.ok) {
           console.log('Event updated successfully')
@@ -291,15 +287,12 @@ export default {
           return
         }
 
-        const response = await fetch(
-          `https://www.googleapis.com/calendar/v3/calendars/yyh6066@gmail.com/events/${this.selectedEvent.id}`,
-          {
-            method: 'DELETE',
-            headers: {
-              Authorization: `Bearer ${tokenResponse.access_token}`
-            }
+        const response = await fetch(`${url}/${this.selectedEvent.id}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${tokenResponse.access_token}`
           }
-        )
+        })
 
         if (response.ok) {
           console.log('Event deleted successfully')
@@ -338,9 +331,7 @@ export default {
 
       calendarApi.removeAllEvents()
 
-      fetch(
-        `https://www.googleapis.com/calendar/v3/calendars/yyh6066@gmail.com/events?key=AIzaSyAuwZFHrGAIap_XuVWCy4OEtYxwJQSjfzo&timeMin=${start}&timeMax=${end}`
-      )
+      fetch(`${url}?key=AIzaSyAuwZFHrGAIap_XuVWCy4OEtYxwJQSjfzo&timeMin=${start}&timeMax=${end}`)
         .then((response) => response.json())
         .then((data) => {
           console.log('구글 캘린더에서 가져온 이벤트:', data.items)
