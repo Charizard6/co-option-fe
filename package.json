@@ -12,16 +12,17 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "axios": "^1.7.2",
-    "vue": "^3.4.29",
-    "vue-router": "^4.3.3",
     "@fullcalendar/core": "^6.1.15",
     "@fullcalendar/daygrid": "^6.1.15",
     "@fullcalendar/google-calendar": "^6.1.15",
     "@fullcalendar/interaction": "^6.1.15",
     "@fullcalendar/timegrid": "^6.1.15",
     "@fullcalendar/vue3": "^6.1.15",
-    "googleapis": "^140.0.1"
+    "@vueform/multiselect": "^2.6.9",
+    "axios": "^1.7.2",
+    "googleapis": "^140.0.1",
+    "vue": "^3.4.29",
+    "vue-router": "^4.3.3"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.8.0",
