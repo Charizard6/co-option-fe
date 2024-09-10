@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../components/Home.vue'
 import RequestedBox from '../components/RequestedBox.vue'
 import CalendarPage from '../components/DemoApp.vue'
+import LoginForm from '@/components/LoginForm.vue'
 
 const routes = [
   {
@@ -18,6 +19,11 @@ const routes = [
     path: '/calendar-page',
     name: 'CalendarPage',
     component: CalendarPage
+  },
+  {
+    path: '/login-form',
+    name: 'LoginForm',
+    component: LoginForm
   }
 ]
 

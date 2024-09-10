@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>Home Page</h1>
+    <button @click="goToLoginForm">Go to LoginPage</button>
     <button @click="goToRequestedBox">Go to Requested Box</button>
     <button @click="goToCalendar">Go to Calendar</button>
   </div>
@@ -20,10 +21,14 @@ export default {
     const goToCalendar = () => {
       router.push('/calendar-page')
     }
+    const goToLoginForm = () => {
+      router.push('/login-form')
+    }
 
     return {
       goToRequestedBox,
-      goToCalendar
+      goToCalendar,
+      goToLoginForm
     }
   }
 }
