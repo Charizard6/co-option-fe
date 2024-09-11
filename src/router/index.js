@@ -3,6 +3,7 @@ import Home from '../components/Home.vue'
 import RequestedBox from '../components/RequestedBox.vue'
 import CalendarPage from '../components/DemoApp.vue'
 import LoginForm from '@/components/LoginForm.vue'
+import SignUpForm from '@/components/SignUpForm.vue'
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: '/login-form',
     name: 'LoginForm',
     component: LoginForm
+  },
+  {
+    path: '/signup-form',
+    name: 'SignUpForm',
+    component: SignUpForm
   }
 ]
 

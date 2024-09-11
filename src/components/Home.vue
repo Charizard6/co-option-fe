@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>Home Page</h1>
+    <button @click="goToSignUpForm">Go to SignupPage</button>
     <button @click="goToLoginForm">Go to LoginPage</button>
     <button @click="goToRequestedBox">Go to Requested Box</button>
     <button @click="goToCalendar">Go to Calendar</button>
@@ -24,11 +25,15 @@ export default {
     const goToLoginForm = () => {
       router.push('/login-form')
     }
+    const goToSignUpForm = () => {
+      router.push('/signup-form')
+    }
 
     return {
       goToRequestedBox,
       goToCalendar,
-      goToLoginForm
+      goToLoginForm,
+      goToSignUpForm
     }
   }
 }
