@@ -9,6 +9,13 @@
       </div>
 
       <div class="form-group">
+        <label>아이디</label>
+        <div class="email-check-wrapper">
+          <input v-model="id" type="email" placeholder="아이디를 입력하세요" />
+          <button class="email-check-button" @click="checkEmail">아이디 확인</button>
+        </div>
+      </div>
+      <div class="form-group">
         <label>이메일</label>
         <div class="email-check-wrapper">
           <input v-model="email" type="email" placeholder="이메일을 입력하세요" />
@@ -32,6 +39,7 @@ export default {
   data() {
     return {
       name: '',
+      id: '',
       email: '',
       password: ''
     }
@@ -60,13 +68,14 @@ export default {
     },
     submitSignup() {
       // 회원가입 요청 (예시)
-      fetch('https://example.com/api/signup', {
+      fetch('https://localhost:8080/create-user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           name: this.name,
+          id: this.id,
           email: this.email,
           password: this.password
         })
