@@ -177,7 +177,7 @@ export default {
             return
           }
 
-          const response = await fetch(url, {
+          const response = await fetch('http://localhost:9001/api/users/createEvent', {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${tokenResponse.access_token}`,
@@ -186,19 +186,14 @@ export default {
             body: JSON.stringify(event)
           })
 
-          if (response.ok) {
-            const eventData = await response.json()
-            console.log('Event created:', eventData)
-            alert('이벤트가 구글 캘린더에 생성되었습니다!')
-            //생성된 일정의 id
-            console.log('eventID', eventData.id)
-
-            calendarApi.removeAllEvents()
-            this.fetchEventsForCurrentMonth()
-          } else {
+          if (!response.ok) {
             console.error('이벤트 생성 오류:', response.statusText, response.status)
-            alert('이벤트 생성에 실패했습니다. 다시 시도해주세요.')
+            alert('이벤트 생성에 실패했습니다. 관리자에게 문의하세요.')
+            return false
           }
+          alert('이벤트가 구글 캘린더에 생성되었습니다!')
+          calendarApi.removeAllEvents()
+          this.fetchEventsForCurrentMonth()
         }
 
         this.tokenClient.requestAccessToken()
@@ -238,7 +233,8 @@ export default {
         },
         end: {
           date: addOneDay(this.selectedEvent.end)
-        }
+        },
+        eid: this.selectedEvent.id
       }
 
       this.tokenClient.callback = async (tokenResponse) => {
@@ -256,21 +252,20 @@ export default {
           body: JSON.stringify(updatedEvent)
         })
 
-        if (response.ok) {
-          console.log('Event updated successfully')
-          alert('이벤트가 수정되었습니다!')
-          calendarApi.getEventById(this.selectedEvent.id).remove()
-          calendarApi.addEvent({
-            id: this.selectedEvent.id,
-            title: this.selectedEvent.title,
-            description: this.selectedEvent.description,
-            start: this.selectedEvent.start,
-            end: addOneDay(this.selectedEvent.end)
-          })
-          this.resetForm()
-        } else {
+        if (!response.ok) {
           console.error('Failed to update event:', response)
+          return false
         }
+        alert('이벤트가 수정되었습니다!')
+        calendarApi.getEventById(this.selectedEvent.id).remove()
+        calendarApi.addEvent({
+          id: this.selectedEvent.id,
+          title: this.selectedEvent.title,
+          description: this.selectedEvent.description,
+          start: this.selectedEvent.start,
+          end: addOneDay(this.selectedEvent.end)
+        })
+        this.resetForm()
       }
 
       this.tokenClient.requestAccessToken()
@@ -295,12 +290,12 @@ export default {
         })
 
         if (response.ok) {
-          console.log('Event deleted successfully')
-          calendarApi.getEventById(this.selectedEvent.id).remove()
-          this.resetForm()
-        } else {
           console.error('Failed to delete event:', response)
+          return false
         }
+        alert('일정이 삭제되었습니다.')
+        calendarApi.getEventById(this.selectedEvent.id).remove()
+        this.resetForm()
       }
 
       this.tokenClient.requestAccessToken()
@@ -321,7 +316,6 @@ export default {
     },
     handleEvents(events) {
       this.currentEvents = events
-      console.log('현재 이벤트:', events)
     },
     fetchEventsForCurrentMonth() {
       //일정 가져오기
@@ -336,8 +330,6 @@ export default {
       )
         .then((response) => response.json())
         .then((data) => {
-          console.log('구글 캘린더에서 가져온 이벤트:', data.items)
-
           data.items.forEach((event) => {
             const existingEvent = calendarApi.getEventById(event.id)
             if (!existingEvent) {
@@ -351,8 +343,6 @@ export default {
               })
             }
           })
-
-          console.log('현재 캘린더의 모든 이벤트:', calendarApi.getEvents())
         })
         .catch((error) => console.error('이벤트 가져오기 오류:', error))
     },
