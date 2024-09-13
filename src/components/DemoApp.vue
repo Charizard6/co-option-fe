@@ -15,7 +15,7 @@
         수신자:
         <div>
           <Multiselect
-            v-model="value"
+            v-model="selectedRecipients"
             :options="options"
             :searchable="true"
             :object="true"
@@ -355,22 +355,30 @@ export default {
         this.selectedEventId = info.event.id // 선택한 이벤트 ID 저장
       })
     },
-    sendRequest() {
+    async sendRequest() {
       if (this.selectedRecipients.length === 0 || this.requestMessage.trim() === '') {
         alert('수신자와 요청 내용을 입력하세요.')
         return
       }
-
       const payload = {
         eventId: this.selectedEventId,
         recipients: this.selectedRecipients,
         message: this.requestMessage
       }
-
-      const serverUrl = 'https://example.com/api/send-request' // 서버 URL 임시 설정
-
-      // 여기에 서버 전송 로직 추가
-      console.log('상신 데이터:', payload)
+      const response = await fetch('http://localhost:9001/api/users/insertUserRequest', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+      if (!response.ok) {
+        console.error('오류:', response.statusText, response.status)
+        alert('일정 참가 요청을 실패했습니다. 관리자에게 문의하세요.')
+        return false
+      }
+      alert('일정 참가 요청을 전송하였습니다.')
+      this.resetForm()
     }
   },
   mounted() {
