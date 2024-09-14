@@ -161,14 +161,10 @@ export default {
 
       if (eventData.title && eventData.description) {
         const event = {
-          summary: eventData.title,
-          description: eventData.description,
-          start: {
-            date: startStr
-          },
-          end: {
-            date: endStr
-          }
+          eventNm: eventData.title,
+          eventDesc: eventData.description,
+          eventStartDate: startStr,
+          end: endStr
         }
 
         this.tokenClient.callback = async (tokenResponse) => {
@@ -222,18 +218,14 @@ export default {
       // 수정 모드로 전환
       this.isEditing = true
     },
-    async saveEvent() {
+    async updateEvent() {
       // 수정된 이벤트를 저장
       const calendarApi = this.$refs.fullCalendar.getApi()
       const updatedEvent = {
-        summary: this.selectedEvent.title,
-        description: this.selectedEvent.description,
-        start: {
-          date: this.selectedEvent.start
-        },
-        end: {
-          date: addOneDay(this.selectedEvent.end)
-        },
+        eventNm: this.selectedEvent.title,
+        eventDesc: this.selectedEvent.description,
+        eventStartDate: this.selectedEvent.start,
+        eventEndDate: addOneDay(this.selectedEvent.end),
         eid: this.selectedEvent.id
       }
 
