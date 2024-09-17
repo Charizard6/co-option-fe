@@ -5,6 +5,7 @@
     <button @click="goToLoginForm">Go to LoginPage</button>
     <button @click="goToRequestedBox">Go to Requested Box</button>
     <button @click="goToCalendar">Go to Calendar</button>
+    <button @click="goToTaskManager">Go to TaskManager</button>
   </div>
 </template>
 
@@ -28,12 +29,16 @@ export default {
     const goToSignUpForm = () => {
       router.push('/signup-form')
     }
+    const goToTaskManager = () => {
+      router.push('/task-manager')
+    }
 
     return {
       goToRequestedBox,
       goToCalendar,
       goToLoginForm,
-      goToSignUpForm
+      goToSignUpForm,
+      goToTaskManager
     }
   }
 }

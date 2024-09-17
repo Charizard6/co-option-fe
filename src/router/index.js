@@ -4,6 +4,7 @@ import RequestedBox from '../components/RequestedBox.vue'
 import CalendarPage from '../components/DemoApp.vue'
 import LoginForm from '@/components/LoginForm.vue'
 import SignUpForm from '@/components/SignUpForm.vue'
+import TaskManager from '@/components/TaskManager.vue'
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path: '/signup-form',
     name: 'SignUpForm',
     component: SignUpForm
+  },
+  {
+    path: '/task-manager',
+    name: 'TaskManager',
+    component: TaskManager
   }
 ]
 
