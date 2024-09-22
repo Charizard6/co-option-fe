@@ -149,25 +149,29 @@ export default {
 .main-layout {
   display: flex;
   justify-content: space-between;
+  gap: 20px; /* 칸 사이에 간격 추가 */
   margin-top: 20px;
 }
 
-.left-section {
-  width: 20%;
-}
-
+.left-section,
 .center-section,
 .right-section {
-  width: 40%;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 10px;
+  flex: 1;
+  min-height: 400px; /* 최소 높이를 400px로 설정 */
+  max-height: 500px; /* 최대 높이 설정 */
+  overflow-y: auto;
 }
 
 .task-list-scroll {
   border: 1px solid #ccc;
   padding: 10px;
   border-radius: 10px;
-  max-height: 300px; /* 최대 높이 지정, 스크롤 발생 */
+  max-height: 300px; /* 스크롤 발생 */
   overflow-y: auto;
-  text-align: left;
 }
 
 .participants,
@@ -177,8 +181,8 @@ export default {
   border-radius: 10px;
   margin-bottom: 20px;
   text-align: left;
-  max-height: 150px; /* 최대 높이 지정 */
-  overflow-y: auto; /* 스크롤을 위해 추가 */
+  max-height: 150px;
+  overflow-y: auto; /* 스크롤 추가 */
 }
 
 h2 {
@@ -192,7 +196,7 @@ ul {
 
 li {
   padding: 10px 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #000;
 }
 
 li:last-child {
