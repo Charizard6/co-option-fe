@@ -12,14 +12,14 @@
       <!-- 좌측: 참가자와 내용 -->
       <div class="left-section">
         <h2>참가자</h2>
-        <div class="participants">
-          <div v-for="participant in participants" :key="participant.id">
+        <div class="participants-scrollable">
+          <div class="participant" v-for="participant in participants" :key="participant.id">
             {{ participant.name }} - {{ participant.role }}
           </div>
         </div>
 
         <h2>내용</h2>
-        <div class="content-details">
+        <div class="content-details-scrollable">
           <p>{{ content }}</p>
         </div>
       </div>
@@ -29,22 +29,41 @@
         <h2>Share Task</h2>
         <div class="task-list-scroll">
           <ul>
-            <li v-for="task in sharedTasks" :key="task.id">
-              <p>{{ task.name }}</p>
-              <small>{{ task.deadline }} 완료: {{ task.completed_at }}</small>
+            <li v-for="task in sharedTasks" :key="task.id" class="task-item">
+              <div class="task-body">
+                <input
+                  type="checkbox"
+                  :checked="task.completed"
+                  @change="toggleTaskCompletion(task, 'shared')"
+                />
+                <div class="task-info">
+                  <p class="task-title">{{ task.name }}</p>
+                  <p class="task-status">미리 알림</p>
+                  <small class="task-completed">완료일: {{ task.completed_at }}</small>
+                </div>
+              </div>
             </li>
           </ul>
         </div>
       </div>
 
-      <!-- 우측: 개인 태스크 -->
       <div class="right-section">
         <h2>Task List</h2>
         <div class="task-list-scroll">
           <ul>
-            <li v-for="task in personalTasks" :key="task.id">
-              <p>{{ task.name }}</p>
-              <small>{{ task.deadline }} 완료: {{ task.completed_at }}</small>
+            <li v-for="task in personalTasks" :key="task.id" class="task-item">
+              <div class="task-body">
+                <input
+                  type="checkbox"
+                  :checked="task.completed"
+                  @change="toggleTaskCompletion(task, 'personal')"
+                />
+                <div class="task-info">
+                  <p class="task-title">{{ task.name }}</p>
+                  <p class="task-status">미리 알림</p>
+                  <small class="task-completed">완료일: {{ task.completed_at }}</small>
+                </div>
+              </div>
             </li>
           </ul>
         </div>
@@ -60,10 +79,12 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data() {
     return {
-      progress: 78,
+      progress: 30,
       participants: [],
       content: '',
       sharedTasks: [],
@@ -72,34 +93,88 @@ export default {
   },
   methods: {
     fetchData() {
-      this.participants = [
-        { id: 1, name: '문익점(moon_lckSpot)', role: 'Master' },
-        { id: 2, name: '블라드미르푸틴(sibak)', role: '' }
-      ]
+      // 서버에서 참가자 데이터를 가져오는 비동기 통신 (예시로 실제 통신 대신 임시 데이터 추가)
+      axios
+        .get('/api/participants')
+        .then((response) => {
+          // this.participants = response.data
+          // 임의의 데이터를 사용
+          this.participants = [
+            { id: 1, name: '문익점', role: 'Master' },
+            { id: 2, name: '블라드미르푸틴', role: 'Developer' },
+            { id: 3, name: '문익점', role: 'Master' },
+            { id: 4, name: '문익점', role: 'Master' },
+            { id: 5, name: '문익점', role: 'Master' },
+            { id: 6, name: '문익점', role: 'Master' }
+          ]
+        })
+        .catch(() => {})
 
-      this.content = 'Co-Option 중간보고 발표자료 프로토타입 제작.'
+      // 서버에서 내용을 가져오는 비동기 통신 (예시로 실제 통신 대신 임시 데이터 추가)
+      axios
+        .get('/api/content')
+        .then((response) => {
+          // this.content = response.data
+          this.content =
+            'Co-Option 중간보고 발표자료 프로토타입 제작.Co-Option 중간보고 발표자료 프로토타입 제작.Co-Option 중간보고 발표자료 프로토타입 제작.Co-Option 중간보고 발표자료 프로토타입 제작.Co-Option 중간보고 발표자료 프로토타입 제작.Co-Option 중간보고 발표자료 프로토타입 제작.Co-Option 중간보고 발표자료 프로토타입 제작.'
+        })
+        .catch(() => {})
 
-      this.sharedTasks = [
-        { id: 1, name: '64p', deadline: '2022.10.18', completed_at: '2022.10.18 오후 11:07' },
-        { id: 2, name: '여행병법', deadline: '2022.8.10', completed_at: '2022.10.18 오후 11:07' }
-      ]
+      // 서버에서 공유 태스크 데이터를 가져오는 비동기 통신 (예시로 실제 통신 대신 임시 데이터 추가)
+      axios
+        .get('/api/tasks/shared')
+        .then((response) => {
+          // this.sharedTasks = response.data
+          this.sharedTasks = [
+            {
+              id: 1,
+              name: '64p',
+              deadline: '2022.10.18',
+              completed: false,
+              completed_at: '미완료'
+            },
+            {
+              id: 2,
+              name: '여행병법',
+              deadline: '2022.8.10',
+              completed: true,
+              completed_at: '2022.10.18 오후 11:07'
+            }
+          ]
+        })
+        .catch(() => {})
 
-      this.personalTasks = [
-        {
-          id: 1,
-          name: '무신사 둘러보기',
-          deadline: '2023.2.9',
-          completed_at: '2023.2.9 오후 10:34'
-        },
-        { id: 2, name: '미용실 예약', deadline: '2023.2.5', completed_at: '2023.2.5 오전 2:13' }
-      ]
+      // 서버에서 개인 태스크 데이터를 가져오는 비동기 통신 (예시로 실제 통신 대신 임시 데이터 추가)
+      axios
+        .get('/api/tasks/personal')
+        .then((response) => {
+          //this.personalTasks = response.data
+          this.personalTasks = [
+            {
+              id: 1,
+              name: '무신사 둘러보기',
+              deadline: '2023.2.9',
+              completed: false,
+              completed_at: '미완료'
+            },
+            {
+              id: 2,
+              name: '미용실 예약',
+              deadline: '2023.2.5',
+              completed: true,
+              completed_at: '2023.2.5 오전 2:13'
+            }
+          ]
+        })
+        .catch(() => {})
     },
     addTask(type) {
       const newTask = {
         id: Date.now(),
         name: '새로운 태스크',
         deadline: '미리 알림',
-        completed_at: '추가 완료'
+        completed: false,
+        completed_at: '미완료'
       }
 
       if (type === 'shared') {
@@ -107,9 +182,26 @@ export default {
       } else if (type === 'personal') {
         this.personalTasks.push(newTask)
       }
+    },
+    toggleTaskCompletion(task, type) {
+      const updatedTask = { ...task, completed: !task.completed }
+
+      // 완료 상태에 따라 완료 혹은 미완료 처리 (서버로 비동기 전송)
+      if (type === 'shared') {
+        axios.put(`/api/tasks/shared/${task.id}/completion`, updatedTask).then(() => {
+          task.completed = updatedTask.completed
+          task.completed_at = updatedTask.completed ? '완료됨' : '미완료'
+        })
+      } else if (type === 'personal') {
+        axios.put(`/api/tasks/personal/${task.id}/completion`, updatedTask).then(() => {
+          task.completed = updatedTask.completed
+          task.completed_at = updatedTask.completed ? '완료됨' : '미완료'
+        })
+      }
     }
   },
-  mounted() {
+  created() {
+    // 화면 로드 전에 하드코딩된 데이터를 불러옴
     this.fetchData()
   }
 }
