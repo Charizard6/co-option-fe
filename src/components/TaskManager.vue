@@ -97,7 +97,8 @@ export default {
       axios
         .get('/api/participants')
         .then((response) => {
-          // this.participants = response.data
+          // this.participants = parsedData
+          //const parsedData = JSON.parse(response.data);
           // 임의의 데이터를 사용
           this.participants = [
             { id: 1, name: '문익점', role: 'Master' },
@@ -114,7 +115,8 @@ export default {
       axios
         .get('/api/content')
         .then((response) => {
-          // this.content = response.data
+          // this.content = parsedData
+          //const parsedData = JSON.parse(response.data);
           this.content =
             'Co-Option 중간보고 발표자료 프로토타입 제작.Co-Option 중간보고 발표자료 프로토타입 제작.Co-Option 중간보고 발표자료 프로토타입 제작.Co-Option 중간보고 발표자료 프로토타입 제작.Co-Option 중간보고 발표자료 프로토타입 제작.Co-Option 중간보고 발표자료 프로토타입 제작.Co-Option 중간보고 발표자료 프로토타입 제작.'
         })
@@ -124,7 +126,8 @@ export default {
       axios
         .get('/api/tasks/shared')
         .then((response) => {
-          // this.sharedTasks = response.data
+          // this.sharedTasks = parsedData
+          //const parsedData = JSON.parse(response.data);
           this.sharedTasks = [
             {
               id: 1,
@@ -148,7 +151,8 @@ export default {
       axios
         .get('/api/tasks/personal')
         .then((response) => {
-          //this.personalTasks = response.data
+          // this.personalTasks = parsedData
+          //const parsedData = JSON.parse(response.data);
           this.personalTasks = [
             {
               id: 1,
