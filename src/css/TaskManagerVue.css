@@ -1,0 +1,167 @@
+.app-container {
+  font-family: 'Arial', sans-serif;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0px;
+}
+
+.status {
+  color: green;
+}
+
+.progress-bar {
+  display: flex;
+  align-items: center;
+  width: 500px;
+  background-color: lightgray;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-right: 5%;
+}
+
+.progress {
+  background-color: green;
+  height: 20px;
+}
+
+.main-layout {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 0px;
+}
+
+.left-section,
+.center-section {
+  max-width: 330px;
+}
+
+.left-section,
+.center-section,
+.right-section {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 10px;
+  flex: 1;
+  overflow: hidden;
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.participants-scrollable,
+.content-details-scrollable,
+.task-list-scroll {
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 10px;
+  overflow-y: auto;
+  background-color: #fff;
+}
+
+.participants-scrollable,
+.content-details-scrollable {
+  max-height: 150px;
+}
+.participant,
+.content-details-scrollable > p {
+  font-size: 14px;
+}
+.task-list-scroll {
+  min-height: 400px;
+  max-height: 400px;
+}
+
+.task-item {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  max-height: 40px;
+}
+
+.task-body {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+input[type='checkbox'] {
+  margin-right: 10px;
+}
+
+.task-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.task-title {
+  margin: 0;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: left;
+}
+
+.task-status {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+  text-align: left;
+}
+
+.task-completed {
+  font-size: 10px;
+  color: #999;
+  text-align: left;
+}
+
+button {
+  margin: 10px;
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.task-actions {
+  text-align: center;
+  margin-top: 0px;
+}
+
+/* 커스텀 체크박스 스타일 */
+input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #4caf50;
+  border-radius: 50%;
+  appearance: none;
+  cursor: pointer;
+}
+
+input[type='checkbox']:checked {
+  background-color: #4caf50;
+  border-color: #4caf50;
+}
+
+input[type='checkbox']:hover {
+  border-color: #45a049;
+}
+
+ul {
+  padding-left: 0px;
+}
