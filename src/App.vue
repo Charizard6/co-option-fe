@@ -1,13 +1,18 @@
 <template>
   <div id="app">
+    <NavigationBar />
     <!-- 여기서 라우터 뷰를 사용하여 라우트에 따라 화면이 바뀌게 합니다. -->
-    <router-view></router-view>
+    <router-view class="router-view"></router-view>
   </div>
 </template>
 
 <script>
+import NavigationBar from './components/Navigation.vue'
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    NavigationBar
+  }
 }
 </script>
 
