@@ -23,4 +23,8 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+/* <router-view> 아래 내용이 네비게이션 바 뒤로 가도록 여백 추가 */
+.router-view {
+  margin-top: 40px; /* 네비게이션 바 크기만큼 여백 추가 */
+}
 </style>
