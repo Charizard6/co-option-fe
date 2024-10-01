@@ -315,10 +315,12 @@ export default {
       const start = new Date(calendarApi.view.currentStart).toISOString()
       const end = new Date(calendarApi.view.currentEnd).toISOString()
 
+      const calendarID = import.meta.env.VITE_GOOGLE_CALENDAR_ID
+      const apiKey = import.meta.env.VITE_GOOGLE_API_KEY
       calendarApi.removeAllEvents()
 
       fetch(
-        `https://www.googleapis.com/calendar/v3/calendars/yyh6066@gmail.com/events?key=구글apikey&timeMin=${start}&timeMax=${end}`
+        `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?key=${apiKey}&timeMin=${start}&timeMax=${end}`
       )
         .then((response) => response.json())
         .then((data) => {
