@@ -74,6 +74,7 @@
     <div class="task-actions">
       <button @click="addTask('shared')">공유 Task 추가</button>
       <button @click="addTask('personal')">개인 Task 추가</button>
+      <button @click="requestTask('personal')">개인 Task 요청</button>
     </div>
     <taskPopup
       v-if="showEventPopup"
