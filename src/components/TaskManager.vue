@@ -75,13 +75,24 @@
       <button @click="addTask('shared')">공유 Task 추가</button>
       <button @click="addTask('personal')">개인 Task 추가</button>
     </div>
+    <taskPopup
+      v-if="showEventPopup"
+      :visible="showEventPopup"
+      :isReadOnly="false"
+      @submit="handleEventPopupSubmit"
+      @cancel="handleEventPopupCancel"
+    />
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import taskPopup from './taskPopup.vue'
 
 export default {
+  components: {
+    taskPopup
+  },
   data() {
     return {
       progress: 30,
@@ -173,19 +184,39 @@ export default {
         .catch(() => {})
     },
     addTask(type) {
+      this.showEventPopup = true
+      this.currentTaskType = type
+    },
+    handleEventPopupSubmit(data) {
       const newTask = {
-        id: Date.now(),
-        name: '새로운 태스크',
-        deadline: '미리 알림',
+        id: this.eventId,
+        name: data.title,
+        deadline: data.completedDate,
         completed: false,
-        completed_at: '미완료'
+        completed_at: '미완료',
+        type: this.currentTaskType
       }
 
-      if (type === 'shared') {
-        this.sharedTasks.push(newTask)
-      } else if (type === 'personal') {
-        this.personalTasks.push(newTask)
-      }
+      axios
+        .post(`/api/tasks`, JSON.stringify(newTask))
+        .then((response) => {
+          if (this.currentTaskType === 'shared') {
+            this.sharedTasks.push(response.data)
+          } else if (this.currentTaskType === 'personal') {
+            this.personalTasks.push(response.data)
+          }
+        })
+        .catch((error) => console.error(error))
+        .finally(() => {
+          this.showEventPopup = false
+        })
+    },
+    handleEventPopupCancel() {
+      this.showEventPopup = false
+    },
+    requestTask(type) {
+      this.showEventPopup = true
+      this.currentTaskType = type
     },
     toggleTaskCompletion(task, type) {
       const updatedTask = { ...task, completed: !task.completed }
