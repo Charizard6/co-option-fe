@@ -204,7 +204,7 @@ export default {
       }
 
       axios
-        .post(`/api/tasks`, JSON.stringify(newTask))
+        .post(`/api/tasks`, newTask)
         .then((response) => {
           if (this.currentTaskType === 'shared') {
             this.sharedTasks.push(response.data)
