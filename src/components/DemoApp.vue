@@ -119,7 +119,7 @@ export default {
         select: this.handleDateSelect,
         eventClick: this.handleEventClick,
         eventsSet: this.handleEvents,
-        eventDidMount: this.handleRightClickEvent // 우클릭 이벤트 추가
+        eventDidMount: this.handleEventElementMount // 우클릭 이벤트 추가
       },
       currentEvents: [],
       showEventForm: false,
@@ -200,6 +200,13 @@ export default {
     cancelEventForm() {
       this.showEventForm = false
     },
+
+    handleEventDblClick(clickInfo) {
+      const event = clickInfo.event
+      const path = `/task-manager/${event.id}`
+      this.$router.push(path)
+    },
+
     handleEventClick(clickInfo) {
       this.isRightClick = false //우클릭시 화면 비
       const event = clickInfo.event
@@ -340,13 +347,23 @@ export default {
         })
         .catch((error) => console.error('이벤트 가져오기 오류:', error))
     },
-    handleRightClickEvent(info) {
+    handleEventElementMount(info) {
+      // 함수명 변경 및 수정된 부분**
       const eventElement = info.el
+      const event = info.event
 
+      // **우클릭 이벤트 처리**
       eventElement.addEventListener('contextmenu', (e) => {
-        e.preventDefault() // 우클릭 기본 동작 방지
-        this.isRightClick = true // 우클릭 시 우측 사이드바의 참가 요청 폼 활성화
-        this.selectedEventId = info.event.id // 선택한 이벤트 ID 저장
+        e.preventDefault() // 기본 우클릭 메뉴 방지
+        this.isRightClick = true // 우클릭 시 폼 활성화
+        this.selectedEventId = event.id // 선택한 이벤트 ID 저장
+      })
+
+      // **더블클릭 이벤트 처리 추가**
+      eventElement.addEventListener('dblclick', (e) => {
+        e.preventDefault() // 기본 동작 방지
+        const path = `/task-manager/?eid=${event.id}`
+        this.$router.push(path)
       })
     },
     async sendRequest() {
