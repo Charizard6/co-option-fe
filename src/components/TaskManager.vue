@@ -99,14 +99,19 @@ export default {
       participants: [],
       content: '',
       sharedTasks: [],
-      personalTasks: []
+      personalTasks: [],
+      eventId: '',
+      showEventPopup: false,
+      currentTaskType: '' // 'shared' 또는 'personal' 값을 가짐
     }
   },
   methods: {
     fetchData() {
+      const url = new URL(window.location.href)
+      this.eventId = url.searchParams.get('eid')
       // 서버에서 참가자 데이터를 가져오는 비동기 통신 (예시로 실제 통신 대신 임시 데이터 추가)
       axios
-        .get('/api/participants')
+        .post('/api/participants', JSON.stringify({ eventId: this.eventId }))
         .then((response) => {
           // this.participants = parsedData
           //const parsedData = JSON.parse(response.data);
