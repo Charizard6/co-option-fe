@@ -248,35 +248,30 @@ export default {
       })
       this.resetForm()
     },
-    deleteEvent() {
+    async deleteEvent() {
       //일정 삭제
       if (!this.selectedEvent.id) return
+      const deleteEvent = {
+        eid: this.selectedEvent.id
+      }
 
       const calendarApi = this.$refs.fullCalendar.getApi()
 
-      this.tokenClient.callback = async (tokenResponse) => {
-        if (tokenResponse.error !== undefined) {
-          console.error('Token error:', tokenResponse.error)
-          return
-        }
+      const response = await fetch('http://localhost:9002/coOption/deleteEvent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(deleteEvent)
+      })
 
-        const response = await fetch(`${url}/${this.selectedEvent.id}`, {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${tokenResponse.access_token}`
-          }
-        })
-
-        if (response.ok) {
-          console.error('Failed to delete event:', response)
-          return false
-        }
-        alert('일정이 삭제되었습니다.')
-        calendarApi.getEventById(this.selectedEvent.id).remove()
-        this.resetForm()
+      if (!response.ok) {
+        console.error('Failed to delete event:', response)
+        return false
       }
-
-      this.tokenClient.requestAccessToken()
+      alert('일정이 삭제되었습니다.')
+      calendarApi.getEventById(this.selectedEvent.id).remove()
+      this.resetForm()
     },
     cancelEdit() {
       // 수정 취소
