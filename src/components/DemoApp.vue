@@ -52,7 +52,7 @@
       </label>
       <div v-if="selectedEvent.id">
         <button v-if="!isEditing" @click="editEvent">Edit</button>
-        <button v-else @click="saveEvent">Save</button>
+        <button v-else @click="updateEvent">Save</button>
         <button @click="deleteEvent">Delete</button>
         <button v-if="isEditing" @click="cancelEdit">Cancel</button>
       </div>
@@ -225,38 +225,28 @@ export default {
         eid: this.selectedEvent.id
       }
 
-      this.tokenClient.callback = async (tokenResponse) => {
-        if (tokenResponse.error !== undefined) {
-          console.error('Token error:', tokenResponse.error)
-          return
-        }
+      const response = await fetch('http://localhost:9002/coOption/updateEvent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedEvent)
+      })
 
-        const response = await fetch(`${url}/${this.selectedEvent.id}`, {
-          method: 'PUT',
-          headers: {
-            Authorization: `Bearer ${tokenResponse.access_token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(updatedEvent)
-        })
-
-        if (!response.ok) {
-          console.error('Failed to update event:', response)
-          return false
-        }
-        alert('이벤트가 수정되었습니다!')
-        calendarApi.getEventById(this.selectedEvent.id).remove()
-        calendarApi.addEvent({
-          id: this.selectedEvent.id,
-          title: this.selectedEvent.title,
-          description: this.selectedEvent.description,
-          start: this.selectedEvent.start,
-          end: addOneDay(this.selectedEvent.end)
-        })
-        this.resetForm()
+      if (!response.ok) {
+        console.error('Failed to update event:', response)
+        return false
       }
-
-      this.tokenClient.requestAccessToken()
+      alert('이벤트가 수정되었습니다!')
+      calendarApi.getEventById(this.selectedEvent.id).remove()
+      calendarApi.addEvent({
+        id: this.selectedEvent.id,
+        title: this.selectedEvent.title,
+        description: this.selectedEvent.description,
+        start: this.selectedEvent.start,
+        end: addOneDay(this.selectedEvent.end)
+      })
+      this.resetForm()
     },
     deleteEvent() {
       //일정 삭제
