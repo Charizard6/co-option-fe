@@ -167,34 +167,23 @@ export default {
           end: endStr
         }
 
-        this.tokenClient.callback = async (tokenResponse) => {
-          if (tokenResponse.error !== undefined) {
-            console.error('Token error:', tokenResponse.error)
-            return
-          }
+        const response = await fetch('http://localhost:9002/coOption/createEvent', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(event)
+        })
 
-          const response = await fetch('http://localhost:9001/api/users/createEvent', {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${tokenResponse.access_token}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(event)
-          })
-
-          if (!response.ok) {
-            console.error('이벤트 생성 오류:', response.statusText, response.status)
-            alert('이벤트 생성에 실패했습니다. 관리자에게 문의하세요.')
-            return false
-          }
-          alert('이벤트가 구글 캘린더에 생성되었습니다!')
-          calendarApi.removeAllEvents()
-          this.fetchEventsForCurrentMonth()
+        if (!response.ok) {
+          console.error('이벤트 생성 오류:', response.statusText, response.status)
+          alert('이벤트 생성에 실패했습니다. 관리자에게 문의하세요.')
+          return false
         }
-
-        this.tokenClient.requestAccessToken()
+        alert('이벤트가 구글 캘린더에 생성되었습니다!')
+        calendarApi.removeAllEvents()
+        this.fetchEventsForCurrentMonth()
       }
-
       this.showEventForm = false
     },
     cancelEventForm() {
