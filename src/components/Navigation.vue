@@ -55,6 +55,7 @@ export default {
 
 /* 로고 스타일 */
 .logo {
+  transition: all .3s;
   font-size: 24px;
   font-weight: bold;
   color: black;
@@ -64,28 +65,40 @@ export default {
 /* 네비게이션 링크 초기 상태 */
 .nav-links {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   list-style: none;
   padding: 0;
+  height: 1.5vw;
   margin: 0 auto;
   max-width: 800px;
   width: 100%;
+  transition: all .3s;
   opacity: 0; /* 초기 상태에서 보이지 않도록 설정 */
-  transform: translateY(-50%); /* 위쪽에 숨겨둠 */
-  transition:
-    transform 0.5s ease,
-    opacity 0.5s ease; /* 부드러운 애니메이션 설정 */
+  transform: tran
+  slateY(-50%); /* 위쪽에 숨겨둠 */
 }
+
 .nav-links button {
+  
   margin: 0;
   padding: 0;
 }
 
 /* 마우스를 올렸을 때 네비게이션 항목이 내려옴 */
 .navbar:hover .nav-links {
+  transition: all .3s;
+  height: 5vw;
   opacity: 1; /* 서서히 보이게 설정 */
   transform: translateY(5%); /* 위에서 아래로 내려옴 */
+}
+
+.navbar:hover .logo{
+  transition: all .3s;
+  font-size: 32px;
+  font-weight: bold;
+  color: black;
+  margin-bottom: 5px;
 }
 
 /* 각 항목 중앙 정렬 */
@@ -100,7 +113,7 @@ export default {
   border: none;
   font-weight: bold;
   color: rgb(76, 76, 76);
-  font-size: 16px;
+  font-size: 22px;
   cursor: pointer;
 }
 
