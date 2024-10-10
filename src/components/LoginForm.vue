@@ -5,12 +5,12 @@
 
       <div class="form-group">
         <label>아이디</label>
-        <input type="text" placeholder="아이디를 입력하세요" />
+        <input v-model="username" type="text" placeholder="아이디를 입력하세요" />
       </div>
 
       <div class="form-group">
         <label>비밀번호</label>
-        <input type="password" placeholder="비밀번호를 입력하세요" />
+        <input v-model="password" type="password" placeholder="비밀번호를 입력하세요" />
       </div>
 
       <button @click="submitForm">로그인</button>
@@ -19,12 +19,43 @@
 </template>
 
 <script>
+import { mapMutations, mapState } from 'vuex'
+
 export default {
   name: 'loginForm',
+  data() {
+    return {
+      username: '',
+      password: ''
+    }
+  },
   methods: {
-    submitForm() {
-      // 로그인 로직을 여기에 추가하세요.
-      console.log('로그인 시도')
+    ...mapMutations(['setUser']),
+    async submitForm() {
+      try {
+        const response = await fetch('http://localhost:8080/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            username: this.username,
+            password: this.password
+          })
+        })
+
+        if (response.ok) {
+          const data = await response.json()
+          this.setUser(data) // Vuex에 사용자 정보 저장
+          alert('로그인 성공')
+          this.$router.push('/') // 로그인 성공 시 홈으로 이동
+        } else {
+          alert('로그인 실패: 아이디 또는 비밀번호가 잘못되었습니다.')
+        }
+      } catch (error) {
+        console.error('로그인 요청 중 오류 발생:', error)
+        alert('로그인 요청 중 오류가 발생했습니다.')
+      }
     }
   }
 }
