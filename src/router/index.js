@@ -11,20 +11,17 @@ const routes = [
   {
     path: '/',
     name: 'HomeVue',
-    component: Home,
-    meta: { auth: true }
+    component: Home
   },
   {
     path: '/requested-box',
     name: 'RequestedBox',
-    component: RequestedBox,
-    meta: { auth: true }
+    component: RequestedBox
   },
   {
     path: '/calendar-page',
     name: 'CalendarPage',
-    component: CalendarPage,
-    meta: { auth: true }
+    component: CalendarPage
   },
   {
     path: '/login-form',
@@ -39,8 +36,7 @@ const routes = [
   {
     path: '/task-manager',
     name: 'TaskManager',
-    component: TaskManager,
-    meta: { auth: true }
+    component: TaskManager
   }
 ]
 

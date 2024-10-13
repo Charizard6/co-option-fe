@@ -51,17 +51,17 @@
         <h2>Task List</h2>
         <div class="task-list-scroll">
           <ul>
-            <li v-for="task in personalTasks" :key="task.id" class="task-item">
+            <li v-for="task in personalTasks" :key="task.taskSeq" class="task-item">
               <div class="task-body">
                 <input
                   type="checkbox"
-                  :checked="task.completed"
+                  :checked="task.completeYn"
                   @change="toggleTaskCompletion(task, 'personal')"
                 />
                 <div class="task-info">
-                  <p class="task-title">{{ task.name }}</p>
+                  <p class="task-title">{{ task.taskNm }}</p>
                   <p class="task-status">미리 알림</p>
-                  <small class="task-completed">완료일: {{ task.completed_at }}</small>
+                  <!-- <small class="task-completed">완료일: {{ task.completed_at }}</small> -->
                 </div>
               </div>
             </li>
@@ -112,7 +112,7 @@ export default {
       this.eventId = url.searchParams.get('eid')
       // 서버에서 참가자 데이터를 가져오는 비동기 통신 (예시로 실제 통신 대신 임시 데이터 추가)
       axios
-        .post('/api/participants', JSON.stringify({ eventId: this.eventId }))
+        .post('/api/participants',{ eventId: this.eventId })
         .then((response) => {
           // this.participants = parsedData
           //const parsedData = JSON.parse(response.data);
@@ -166,26 +166,26 @@ export default {
 
       // 서버에서 개인 태스크 데이터를 가져오는 비동기 통신 (예시로 실제 통신 대신 임시 데이터 추가)
       axios
-        .get('/api/tasks/personal')
+        .post(('http://localhost:9003/coOption/selectTaskList'),{ eventSeq: 1 })
         .then((response) => {
-          // this.personalTasks = parsedData
+          this.personalTasks = response.data
           //const parsedData = JSON.parse(response.data);
-          this.personalTasks = [
-            {
-              id: 1,
-              name: '무신사 둘러보기',
-              deadline: '2023.2.9',
-              completed: false,
-              completed_at: '미완료'
-            },
-            {
-              id: 2,
-              name: '미용실 예약',
-              deadline: '2023.2.5',
-              completed: true,
-              completed_at: '2023.2.5 오전 2:13'
-            }
-          ]
+          // this.personalTasks = [
+          //   {
+          //     id: 1,
+          //     name: '무신사 둘러보기',
+          //     deadline: '2023.2.9',
+          //     completed: false,
+          //     completed_at: '미완료'
+          //   },
+          //   {
+          //     id: 2,
+          //     name: '미용실 예약',
+          //     deadline: '2023.2.5',
+          //     completed: true,
+          //     completed_at: '2023.2.5 오전 2:13'
+          //   }
+          // ]
         })
         .catch(() => {})
     },
