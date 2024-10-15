@@ -74,10 +74,10 @@ export default {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          name: this.name,
-          id: this.id,
-          email: this.email,
-          password: this.password
+          userName: this.name,
+          userId: this.id,
+          userMail: this.email,
+          userPwd: this.password
         })
       })
         .then((response) => response.json())
