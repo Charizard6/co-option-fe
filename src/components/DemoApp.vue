@@ -346,9 +346,9 @@ export default {
         return
       }
       const payload = {
-        eventId: this.selectedEventId,
-        recipients: this.selectedRecipients,
-        message: this.requestMessage
+        eid: this.selectedEventId,
+        //recipients: this.selectedRecipients, 수신자 배열? 고민좀
+        requestNm: this.requestMessage
       }
       const response = await fetch('http://localhost:9001/api/users/insertUserRequest', {
         method: 'POST',
