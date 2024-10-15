@@ -164,7 +164,7 @@ export default {
           eventNm: eventData.title,
           eventDesc: eventData.description,
           eventStartDate: startStr,
-          end: endStr
+          eventEndDate: endStr
         }
 
         const response = await fetch('http://localhost:9002/coOption/createEvent', {
