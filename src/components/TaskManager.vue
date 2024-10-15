@@ -39,7 +39,6 @@
                 <div class="task-info">
                   <p class="task-title">{{ task.name }}</p>
                   <p class="task-status">미리 알림</p>
-                  <small class="task-completed">완료일: {{ task.completed_at }}</small>
                 </div>
               </div>
             </li>
@@ -61,7 +60,6 @@
                 <div class="task-info">
                   <p class="task-title">{{ task.taskNm }}</p>
                   <p class="task-status">미리 알림</p>
-                  <!-- <small class="task-completed">완료일: {{ task.completed_at }}</small> -->
                 </div>
               </div>
             </li>
@@ -112,7 +110,7 @@ export default {
       this.eventId = url.searchParams.get('eid')
       // 서버에서 참가자 데이터를 가져오는 비동기 통신 (예시로 실제 통신 대신 임시 데이터 추가)
       axios
-        .post('/api/participants',{ eventId: this.eventId })
+        .post('/api/participants', { eventSeq: this.eventId })
         .then((response) => {
           // this.participants = parsedData
           //const parsedData = JSON.parse(response.data);
@@ -130,7 +128,7 @@ export default {
 
       // 서버에서 내용을 가져오는 비동기 통신 (예시로 실제 통신 대신 임시 데이터 추가)
       axios
-        .get('/api/content')
+        .get('/api/content', { eventSeq: this.eventId })
         .then((response) => {
           // this.content = parsedData
           //const parsedData = JSON.parse(response.data);
@@ -141,7 +139,7 @@ export default {
 
       // 서버에서 공유 태스크 데이터를 가져오는 비동기 통신 (예시로 실제 통신 대신 임시 데이터 추가)
       axios
-        .get('/api/tasks/shared')
+        .get('/api/tasks/shared', { eventSeq: this.eventId })
         .then((response) => {
           // this.sharedTasks = parsedData
           //const parsedData = JSON.parse(response.data);
@@ -150,15 +148,13 @@ export default {
               id: 1,
               name: '64p',
               deadline: '2022.10.18',
-              completed: false,
-              completed_at: '미완료'
+              completed: false
             },
             {
               id: 2,
               name: '여행병법',
               deadline: '2022.8.10',
-              completed: true,
-              completed_at: '2022.10.18 오후 11:07'
+              completed: true
             }
           ]
         })
@@ -166,7 +162,7 @@ export default {
 
       // 서버에서 개인 태스크 데이터를 가져오는 비동기 통신 (예시로 실제 통신 대신 임시 데이터 추가)
       axios
-        .post(('http://localhost:9003/coOption/selectTaskList'),{ eventSeq: 1 })
+        .post('http://localhost:9003/coOption/selectTaskList', { eventSeq: 1 })
         .then((response) => {
           this.personalTasks = response.data
           //const parsedData = JSON.parse(response.data);
@@ -176,14 +172,12 @@ export default {
           //     name: '무신사 둘러보기',
           //     deadline: '2023.2.9',
           //     completed: false,
-          //     completed_at: '미완료'
           //   },
           //   {
           //     id: 2,
           //     name: '미용실 예약',
           //     deadline: '2023.2.5',
           //     completed: true,
-          //     completed_at: '2023.2.5 오전 2:13'
           //   }
           // ]
         })
@@ -199,7 +193,6 @@ export default {
         name: data.title,
         deadline: data.completedDate,
         completed: false,
-        completed_at: '미완료',
         type: this.currentTaskType
       }
 
@@ -231,12 +224,10 @@ export default {
       if (type === 'shared') {
         axios.put(`/api/tasks/shared/${task.id}/completion`, updatedTask).then(() => {
           task.completed = updatedTask.completed
-          task.completed_at = updatedTask.completed ? '완료됨' : '미완료'
         })
       } else if (type === 'personal') {
         axios.put(`/api/tasks/personal/${task.id}/completion`, updatedTask).then(() => {
           task.completed = updatedTask.completed
-          task.completed_at = updatedTask.completed ? '완료됨' : '미완료'
         })
       }
     }
