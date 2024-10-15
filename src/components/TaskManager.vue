@@ -190,18 +190,18 @@ export default {
     handleEventPopupSubmit(data) {
       const newTask = {
         id: this.eventId,
-        name: data.title,
-        deadline: data.completedDate,
-        completed: false,
-        type: this.currentTaskType
+        taskNm: data.title,
+        taskDate: data.completedDate,
+        completeYn: false,
+        taskType: this.currentTaskType
       }
 
       axios
         .post(`/api/tasks`, newTask)
         .then((response) => {
-          if (this.currentTaskType === 'shared') {
+          if (this.taskType === 'shared') {
             this.sharedTasks.push(response.data)
-          } else if (this.currentTaskType === 'personal') {
+          } else if (this.taskType === 'personal') {
             this.personalTasks.push(response.data)
           }
         })
