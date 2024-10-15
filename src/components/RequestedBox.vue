@@ -40,58 +40,50 @@
 
 <script>
 import axios from 'axios'
+import { mapGetters } from 'vuex'
 export default {
   name: 'RequestedBox',
   data() {
     return {
       tasks: [],
       recipient: '',
-      requestDesc : '',
+      requestDesc: '',
       requestId: '',
       selectedTaskId: null // 선택된 요청의 ID를 저장하기 위한 변수
     }
   },
   methods: {
     fetchRequestData() {
-      // URL의 쿼리 파라미터에서 id 값을 추출합니다.
-      const urlParams = new URLSearchParams(window.location.search)
-      // this.requestId = urlParams?.get('id')
-
-      // if (!this.requestId) {
-      //   console.error('URL에서 id를 찾을 수 없습니다.')
-      //   return
-      // }
       axios
-        .post('http://localhost:9004/coOption/selectRequestList', { userId: 'yyh' })
+        .post('http://localhost:9004/coOption/selectRequestList', { userId: this.getUser })
         .then((response) => {
           this.tasks = response.data
-          
         })
         .catch(() => {})
       // 예시 데이터 사용
       // 실제 API가 준비되면 이 부분을 axios 요청으로 대체하세요.
       //this.tasks = [
-        // {
-        //   id: 1,
-        //   title: '- 체중모임 작담모임',
-        //   sender: 'Choi',
-        //   recipient: '홍길동',
-        //   requestContent: '요청 상세 내용 1이 여기에 표시됩니다.'
-        // },
-        // {
-        //   id: 2,
-        //   title: '- 프로젝트 관리 포토타입 제작',
-        //   sender: 'Choi',
-        //   recipient: '김철수',
-        //   requestContent: '요청 상세 내용 2이 여기에 표시됩니다.'
-        // },
-        // {
-        //   id: 3,
-        //   title: '- 업무 보안지침서 검토 Task 추가 의 건',
-        //   sender: 'Choi',
-        //   recipient: '이영희',
-        //   requestContent: '요청 상세 내용 3이 여기에 표시됩니다.'
-        // }
+      // {
+      //   id: 1,
+      //   title: '- 체중모임 작담모임',
+      //   sender: 'Choi',
+      //   recipient: '홍길동',
+      //   requestContent: '요청 상세 내용 1이 여기에 표시됩니다.'
+      // },
+      // {
+      //   id: 2,
+      //   title: '- 프로젝트 관리 포토타입 제작',
+      //   sender: 'Choi',
+      //   recipient: '김철수',
+      //   requestContent: '요청 상세 내용 2이 여기에 표시됩니다.'
+      // },
+      // {
+      //   id: 3,
+      //   title: '- 업무 보안지침서 검토 Task 추가 의 건',
+      //   sender: 'Choi',
+      //   recipient: '이영희',
+      //   requestContent: '요청 상세 내용 3이 여기에 표시됩니다.'
+      // }
       //]
       // 첫 번째 태스크를 기본으로 선택
       if (this.tasks.length > 0) {
@@ -108,7 +100,6 @@ export default {
       // 거절 버튼 클릭 시 실행될 로직
       if (this.selectedTaskId) {
         alert(`요청을 거절하였습니다. 요청 ID: ${this.selectedTaskId}`)
-        // 필요한 추가 로직을 구현하세요.
       } else {
         alert('선택된 요청이 없습니다.')
       }
@@ -117,11 +108,13 @@ export default {
       // 승인 버튼 클릭 시 실행될 로직
       if (this.selectedTaskId) {
         alert(`요청을 승인하였습니다. 요청 ID: ${this.selectedTaskId}`)
-        // 필요한 추가 로직을 구현하세요.
       } else {
         alert('선택된 요청이 없습니다.')
       }
     }
+  },
+  computed: {
+    ...mapGetters(['getUser'])
   },
   created() {
     this.fetchRequestData()
