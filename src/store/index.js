@@ -19,6 +19,11 @@ export default createStore({
       state.user = null
     }
   },
+  getters: {
+    getUser: (state) => {
+      return state.user.userId
+    }
+  },
   plugins: [
     createPersistedState({
       storage: window.sessionStorage // 세션 유지 (localStorage로 변경하면 브라우저가 닫혀도 유지)
