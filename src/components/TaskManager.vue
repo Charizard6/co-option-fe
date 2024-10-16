@@ -29,15 +29,15 @@
         <h2>Share Task</h2>
         <div class="task-list-scroll">
           <ul>
-            <li v-for="task in sharedTasks" :key="task.id" class="task-item">
+            <li v-for="task in sharedTasks" :key="task.taskSeq" class="task-item">
               <div class="task-body">
                 <input
                   type="checkbox"
-                  :checked="task.completed"
+                  :checked="task.completeYn"
                   @change="toggleTaskCompletion(task, 'shared')"
                 />
                 <div class="task-info">
-                  <p class="task-title">{{ task.name }}</p>
+                  <p class="task-title">{{ task.taskNm }}</p>
                   <p class="task-status">미리 알림</p>
                 </div>
               </div>
@@ -132,39 +132,15 @@ export default {
         .then((response) => {
           // this.content = parsedData
           //const parsedData = JSON.parse(response.data);
-          this.content =
-            'Co-Option 중간보고 발표자료 프로토타입 제작.Co-Option 중간보고 발표자료 프로토타입 제작.Co-Option 중간보고 발표자료 프로토타입 제작.Co-Option 중간보고 발표자료 프로토타입 제작.Co-Option 중간보고 발표자료 프로토타입 제작.Co-Option 중간보고 발표자료 프로토타입 제작.Co-Option 중간보고 발표자료 프로토타입 제작.'
+          this.content = '캘린더 등록테스트입니다.'
         })
         .catch(() => {})
 
-      // 서버에서 공유 태스크 데이터를 가져오는 비동기 통신 (예시로 실제 통신 대신 임시 데이터 추가)
-      axios
-        .get('/api/tasks/shared', { eventSeq: this.eventId })
-        .then((response) => {
-          // this.sharedTasks = parsedData
-          //const parsedData = JSON.parse(response.data);
-          this.sharedTasks = [
-            {
-              id: 1,
-              name: '64p',
-              deadline: '2022.10.18',
-              completed: false
-            },
-            {
-              id: 2,
-              name: '여행병법',
-              deadline: '2022.8.10',
-              completed: true
-            }
-          ]
-        })
-        .catch(() => {})
-
-      // 서버에서 개인 태스크 데이터를 가져오는 비동기 통신 (예시로 실제 통신 대신 임시 데이터 추가)
       axios
         .post('http://localhost:9003/coOption/selectTaskList', { eventSeq: 1 })
         .then((response) => {
-          this.personalTasks = response.data
+          this.personalTasks = response.data.filter((task) => task.taskType === 'personal')
+          this.sharedTasks = response.data.filter((task) => task.taskType === 'shared')
           //const parsedData = JSON.parse(response.data);
           // this.personalTasks = [
           //   {
