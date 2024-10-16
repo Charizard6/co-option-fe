@@ -1,6 +1,5 @@
 <template>
   <div class="requested-box">
-    <h1>Co-Option</h1>
     <div class="content">
       <div class="task-list">
         <h2>요청받은 일정 및 Task</h2>
