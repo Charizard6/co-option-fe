@@ -137,6 +137,7 @@ h1 {
 }
 
 .content {
+  margin-top: 5%;
   display: flex;
   justify-content: space-between;
 }
