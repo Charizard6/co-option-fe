@@ -70,8 +70,8 @@
 
     <!-- 태스크 추가 버튼 -->
     <div class="task-actions">
-      <button @click="addTask('shared')">공유 Task 추가</button>
-      <button @click="addTask('personal')">개인 Task 추가</button>
+      <button @click="addTask('Y')">공유 Task 추가</button>
+      <button @click="addTask('N')">개인 Task 추가</button>
       <button @click="requestTask('personal')">개인 Task 요청</button>
     </div>
     <taskPopup
@@ -139,8 +139,8 @@ export default {
       axios
         .post('http://localhost:9003/coOption/selectTaskList', { eventSeq: 1 })
         .then((response) => {
-          this.personalTasks = response.data.filter((task) => task.taskType === 'personal')
-          this.sharedTasks = response.data.filter((task) => task.taskType === 'shared')
+          this.personalTasks = response.data.filter((task) => task.taskType === 'N')
+          this.sharedTasks = response.data.filter((task) => task.taskType === 'Y')
           //const parsedData = JSON.parse(response.data);
           // this.personalTasks = [
           //   {
