@@ -38,7 +38,7 @@
                 />
                 <div class="task-info">
                   <p class="task-title">{{ task.taskNm }}</p>
-                  <p class="task-status">미리 알림</p>
+                  <p class="task-status">{{ task.taskDate.substring(0, 10) }}</p>
                 </div>
               </div>
             </li>
@@ -59,7 +59,7 @@
                 />
                 <div class="task-info">
                   <p class="task-title">{{ task.taskNm }}</p>
-                  <p class="task-status">미리 알림</p>
+                  <p class="task-status">{{ task.taskDate.substring(0, 10) }}</p>
                 </div>
               </div>
             </li>
