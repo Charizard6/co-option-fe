@@ -165,21 +165,17 @@ export default {
     },
     handleEventPopupSubmit(data) {
       const newTask = {
-        id: this.eventId,
+        //이벤트 아이디 가데이터
+        eventSeq: 1,
         taskNm: data.title,
-        taskDate: data.completedDate,
-        completeYn: false,
+        taskDate: this.getNextDay(data.completedDate),
         taskType: this.currentTaskType
       }
 
       axios
-        .post(`/api/tasks`, newTask)
-        .then((response) => {
-          if (this.taskType === 'shared') {
-            this.sharedTasks.push(response.data)
-          } else if (this.taskType === 'personal') {
-            this.personalTasks.push(response.data)
-          }
+        .post(`http://localhost:9003/coOption/addTask`, newTask)
+        .then(() => {
+          this.fetchData()
         })
         .catch((error) => console.error(error))
         .finally(() => {
@@ -206,6 +202,20 @@ export default {
           task.completed = updatedTask.completed
         })
       }
+    },
+    getNextDay(dateString) {
+      // 문자열을 Date 객체로 변환
+      const date = new Date(dateString)
+
+      // 하루(밀리초 기준으로 86400000) 추가
+      date.setDate(date.getDate() + 1)
+
+      // YYYY-MM-DD 형식으로 포맷
+      const year = date.getFullYear()
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const day = String(date.getDate()).padStart(2, '0')
+
+      return `${year}-${month}-${day}`
     }
   },
   created() {
