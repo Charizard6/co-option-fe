@@ -189,19 +189,20 @@ export default {
       this.showEventPopup = true
       this.currentTaskType = type
     },
-    toggleTaskCompletion(task, type) {
-      const updatedTask = { ...task, completed: !task.completed }
-
+    toggleTaskCompletion(task) {
       // 완료 상태에 따라 완료 혹은 미완료 처리 (서버로 비동기 전송)
-      if (type === 'shared') {
-        axios.put(`/api/tasks/shared/${task.id}/completion`, updatedTask).then(() => {
-          task.completed = updatedTask.completed
+      axios
+        .post(`http://localhost:9003/coOption/completeYNChange`, {
+          taskSeq: task.taskSeq,
+          // eslint-disable-next-line no-constant-condition
+          completeYn: task.completeYn == 'Y' ? 'N' : 'Y'
         })
-      } else if (type === 'personal') {
-        axios.put(`/api/tasks/personal/${task.id}/completion`, updatedTask).then(() => {
-          task.completed = updatedTask.completed
+        .then((response) => {
+          if (response.ok) {
+            this.fetchData()
+            return false
+          }
         })
-      }
     },
     getNextDay(dateString) {
       // 문자열을 Date 객체로 변환
