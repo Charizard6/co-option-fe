@@ -5,12 +5,12 @@
 
       <div class="form-group">
         <label>아이디</label>
-        <input v-model="username" type="text" placeholder="아이디를 입력하세요" />
+        <input v-model="userId" type="text" placeholder="아이디를 입력하세요" />
       </div>
 
       <div class="form-group">
         <label>비밀번호</label>
-        <input v-model="password" type="password" placeholder="비밀번호를 입력하세요" />
+        <input v-model="userPwd" type="password" placeholder="비밀번호를 입력하세요" />
       </div>
 
       <button @click="submitForm">로그인</button>
@@ -33,7 +33,7 @@ export default {
     ...mapMutations(['setUser']),
     async submitForm() {
       try {
-        const response = await fetch('http://localhost:8080/login', {
+        const response = await fetch('http://localhost:9001/coOption/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
