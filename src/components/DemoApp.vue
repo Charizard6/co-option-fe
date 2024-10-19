@@ -75,6 +75,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import googleCalendarPlugin from '@fullcalendar/google-calendar'
 import EventPopup from './eventPopup.vue'
 import Multiselect from '@vueform/multiselect'
+import { toRaw } from 'vue'
 
 const addOneDay = (dateString, pm) => {
   // 날짜 문자열을 Date 객체로 변환
@@ -357,10 +358,13 @@ export default {
       }
       const payload = {
         eid: this.selectedEventId,
-        //recipients: this.selectedRecipients, 수신자 배열? 고민좀
+        recipients: toRaw(this.selectedRecipients).map((el) => ({
+          userId: el.value,
+          username: el.label
+        })),
         requestNm: this.requestMessage
       }
-      const response = await fetch('http://localhost:9001/api/users/insertUserRequest', {
+      const response = await fetch('http://localhost:9001/coOption/insertUserRequest', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
