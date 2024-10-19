@@ -33,7 +33,7 @@
               <div class="task-body">
                 <input
                   type="checkbox"
-                  :checked="task.completeYn"
+                  :checked="task.completeYn == 'Y'"
                   @change="toggleTaskCompletion(task, 'shared')"
                 />
                 <div class="task-info">
@@ -54,7 +54,7 @@
               <div class="task-body">
                 <input
                   type="checkbox"
-                  :checked="task.completeYn"
+                  :checked="task.completeYn == 'Y'"
                   @change="toggleTaskCompletion(task, 'personal')"
                 />
                 <div class="task-info">
@@ -101,7 +101,7 @@ export default {
       personalTasks: [],
       eventId: '',
       showEventPopup: false,
-      currentTaskType: '' // 'shared' 또는 'personal' 값을 가짐
+      currentTaskType: '' // 'shared' =Y 또는 'personal' =N 값을 가짐
     }
   },
   methods: {
