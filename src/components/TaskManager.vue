@@ -106,25 +106,25 @@ export default {
   },
   methods: {
     fetchData() {
-      const url = new URL(window.location.href)
-      this.eventId = url.searchParams.get('eid')
-      // 서버에서 참가자 데이터를 가져오는 비동기 통신 (예시로 실제 통신 대신 임시 데이터 추가)
-      axios
-        .post('/api/participants', { eventSeq: this.eventId })
-        .then((response) => {
-          // this.participants = parsedData
-          //const parsedData = JSON.parse(response.data);
-          // 임의의 데이터를 사용
-          this.participants = [
-            { id: 1, name: '문익점', role: 'Master' },
-            { id: 2, name: '블라드미르푸틴', role: 'Developer' },
-            { id: 3, name: '문익점', role: 'Master' },
-            { id: 4, name: '문익점', role: 'Master' },
-            { id: 5, name: '문익점', role: 'Master' },
-            { id: 6, name: '문익점', role: 'Master' }
-          ]
-        })
-        .catch(() => {})
+      // const url = new URL(window.location.href)
+      // this.eventId = url.searchParams.get('eid')
+      // // 서버에서 참가자 데이터를 가져오는 비동기 통신 (예시로 실제 통신 대신 임시 데이터 추가)
+      // axios
+      //   .post('/api/participants', { eventSeq: this.eventId })
+      //   .then((response) => {
+      //     // this.participants = parsedData
+      //     //const parsedData = JSON.parse(response.data);
+      //     // 임의의 데이터를 사용
+      //     this.participants = [
+      //       { id: 1, name: '문익점', role: 'Master' },
+      //       { id: 2, name: '블라드미르푸틴', role: 'Developer' },
+      //       { id: 3, name: '문익점', role: 'Master' },
+      //       { id: 4, name: '문익점', role: 'Master' },
+      //       { id: 5, name: '문익점', role: 'Master' },
+      //       { id: 6, name: '문익점', role: 'Master' }
+      //     ]
+      //   })
+      //   .catch(() => {})
 
       // 서버에서 내용을 가져오는 비동기 통신 (예시로 실제 통신 대신 임시 데이터 추가)
       axios
