@@ -25,8 +25,8 @@ export default {
   name: 'loginForm',
   data() {
     return {
-      username: '',
-      password: ''
+      userId: '',
+      userPwd: ''
     }
   },
   methods: {
@@ -39,8 +39,8 @@ export default {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            userId: this.username,
-            userPwd: this.password
+            userId: this.userId,
+            userPwd: this.userPwd
           })
         })
 
