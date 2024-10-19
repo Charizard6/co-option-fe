@@ -141,8 +141,9 @@ export default {
       // ], 기본 멀티셀렉트는 객체 배열이되지만 지금 추가한거는 단일
       value: null,
       options: [
-        { value: 'Java', label: 'Java' },
-        { value: 'JavaScript', label: 'JavaScript' }
+        { value: 'yyh', label: '육영현' },
+        { value: 'mdh', label: '문동환' },
+        { value: 'chj', label: '최현종' }
       ],
       requestMessage: '',
       selectedEventId: null // 선택된 이벤트 ID
@@ -321,6 +322,15 @@ export default {
         })
         .catch((error) => console.error('이벤트 가져오기 오류:', error))
     },
+    // fetchUserData() {
+    //   // 사용자 정보 가져오기
+    //   fetch('http://localhost:9001/coOption/getUser')
+    //     .then((response) => response.json())
+    //     .then((data) => {
+    //       this.options = data
+    //     })
+    //     .catch((error) => console.error('사용자 정보 가져오기 오류:', error))
+    // },
     handleEventElementMount(info) {
       // 함수명 변경 및 수정된 부분**
       const eventElement = info.el
