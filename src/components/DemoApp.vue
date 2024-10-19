@@ -141,11 +141,7 @@ export default {
       //   { name: 'Alice Johnson', email: 'alice.johnson@example.com' }
       // ], 기본 멀티셀렉트는 객체 배열이되지만 지금 추가한거는 단일
       value: null,
-      options: [
-        { value: 'yyh', label: '육영현' },
-        { value: 'mdh', label: '문동환' },
-        { value: 'chj', label: '최현종' }
-      ],
+      options: [],
       requestMessage: '',
       selectedEventId: null // 선택된 이벤트 ID
     }
@@ -323,15 +319,26 @@ export default {
         })
         .catch((error) => console.error('이벤트 가져오기 오류:', error))
     },
-    // fetchUserData() {
-    //   // 사용자 정보 가져오기
-    //   fetch('http://localhost:9001/coOption/getUser')
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //       this.options = data
-    //     })
-    //     .catch((error) => console.error('사용자 정보 가져오기 오류:', error))
-    // },
+    async fetchUserData() {
+      // 사용자 정보 가져오기
+      const response = await fetch('http://localhost:9001/coOption/selectNonEventUserList', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ eventSeq: 1 })
+      })
+      if (!response.ok) {
+        console.error('사용자 정보 가져오기 오류:')
+        return false
+      }
+      const mappingJson = await response.json()
+      const newArray = mappingJson.map((user) => ({
+        value: user.userId,
+        label: user.userName
+      }))
+      this.options = newArray
+    },
     handleEventElementMount(info) {
       // 함수명 변경 및 수정된 부분**
       const eventElement = info.el
@@ -342,6 +349,7 @@ export default {
         e.preventDefault() // 기본 우클릭 메뉴 방지
         this.isRightClick = true // 우클릭 시 폼 활성화
         this.selectedEventId = event.id // 선택한 이벤트 ID 저장
+        this.fetchUserData()
       })
 
       // **더블클릭 이벤트 처리 추가**
