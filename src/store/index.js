@@ -5,7 +5,6 @@ import createPersistedState from 'vuex-persistedstate'
 export default createStore({
   state: {
     user: {
-      id: null,
       userId: null,
       userName: null
     }
