@@ -358,10 +358,7 @@ export default {
       }
       const payload = {
         eid: this.selectedEventId,
-        recipients: toRaw(this.selectedRecipients).map((el) => ({
-          userId: el.value,
-          username: el.label
-        })),
+        recipients: toRaw(this.selectedRecipients).map((el) => el.value),
         requestNm: this.requestMessage
       }
       const response = await fetch('http://localhost:9001/coOption/insertUserRequest', {
