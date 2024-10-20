@@ -149,7 +149,7 @@ export default {
         //이벤트 아이디 가데이터
         eventSeq: this.eventSeq,
         taskNm: data.title,
-        taskDate: this.getNextDay(data.completedDate),
+        taskDate: data.desc,
         taskType: this.currentTaskType
       }
 
@@ -161,6 +161,7 @@ export default {
         .catch((error) => console.error(error))
         .finally(() => {
           this.showEventPopup = false
+          this.fetchData()
         })
     },
     handleEventPopupCancel() {
