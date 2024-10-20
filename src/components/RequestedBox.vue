@@ -64,20 +64,28 @@ export default {
       this.requestDesc = task.requestDesc
     },
     rejectRequest() {
-      // 거절 버튼 클릭 시 실행될 로직
-      if (this.selectedTaskId) {
-        alert(`요청을 거절하였습니다. 요청 ID: ${this.selectedTaskId}`)
-      } else {
-        alert('선택된 요청이 없습니다.')
-      }
+      const urlVal = this.requestType == 'task' ? 'Task' : 'Event'
+      axios
+        .post(`http://localhost:9004/coOption/request${urlVal}Reject`, {
+          userSeq: this.getUserSeq,
+          requestSeq: this.selectedTaskId
+        })
+        .then((response) => {
+          if (response.ok) alert('요청 거절 완료되었습니다.')
+        })
+        .catch(() => alert('요청 거절 실패하였습니다.'))
     },
     approveRequest() {
-      // 승인 버튼 클릭 시 실행될 로직
-      if (this.selectedTaskId) {
-        alert(`요청을 승인하였습니다. 요청 ID: ${this.selectedTaskId}`)
-      } else {
-        alert('선택된 요청이 없습니다.')
-      }
+      const urlVal = this.requestType == 'task' ? 'Task' : 'Event'
+      axios
+        .post(`http://localhost:9004/coOption/request${urlVal}Approval`, {
+          userSeq: this.getUserSeq,
+          requestSeq: this.selectedTaskId
+        })
+        .then((response) => {
+          if (response.ok) alert('요청 승인 완료되었습니다.')
+        })
+        .catch(() => alert('요청 승인 실패하였습니다.'))
     }
   },
   computed: {
