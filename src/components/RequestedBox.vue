@@ -62,6 +62,7 @@ export default {
     selectTask(task) {
       this.selectedTaskId = task.reqeustSeq
       this.requestDesc = task.requestDesc
+      this.requestType = task.requestType
     },
     rejectRequest() {
       const urlVal = this.requestType == 'task' ? 'Task' : 'Event'
@@ -89,7 +90,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getUser'])
+    ...mapGetters(['getUser', 'getUserSeq'])
   },
   created() {
     this.fetchRequestData()
