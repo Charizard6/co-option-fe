@@ -60,7 +60,7 @@ export default {
       }
     },
     selectTask(task) {
-      this.selectedTaskId = task.reqeustSeq
+      this.selectedTaskId = task.requestSeq
       this.requestDesc = task.requestDesc
       this.requestType = task.requestType
     },
@@ -73,6 +73,7 @@ export default {
         })
         .then((response) => {
           if (response.ok) alert('요청 거절 완료되었습니다.')
+          this.fetchRequestData()
         })
         .catch(() => alert('요청 거절 실패하였습니다.'))
     },
@@ -85,6 +86,7 @@ export default {
         })
         .then((response) => {
           if (response.ok) alert('요청 승인 완료되었습니다.')
+          this.fetchRequestData()
         })
         .catch(() => alert('요청 승인 실패하였습니다.'))
     }
