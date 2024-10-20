@@ -14,7 +14,7 @@
         <h2>참가자</h2>
         <div class="participants-scrollable">
           <div class="participant" v-for="participant in participants" :key="participant.id">
-            {{ participant.name }} - {{ participant.role }}
+            {{ participant.userName }} - {{ participant.userMail }}
           </div>
         </div>
 
@@ -117,23 +117,19 @@ export default {
           this.eventSeq = response.data.eventSeq
           this.content = response.data.eventDesc
           getTaskList()
+          getUserList()
         })
-      // axios
-      //   .post('/api/participants', { eventSeq: this.eventSeq })
-      //   .then((response) => {
-      //     // this.participants = parsedData
-      //     //const parsedData = JSON.parse(response.data);
-      //     // 임의의 데이터를 사용
-      //     this.participants = [
-      //       { id: 1, name: '문익점', role: 'Master' },
-      //       { id: 2, name: '블라드미르푸틴', role: 'Developer' },
-      //       { id: 3, name: '문익점', role: 'Master' },
-      //       { id: 4, name: '문익점', role: 'Master' },
-      //       { id: 5, name: '문익점', role: 'Master' },
-      //       { id: 6, name: '문익점', role: 'Master' }
-      //     ]
-      //   })
-      //   .catch(() => {})
+      const getUserList = () => {
+        axios
+          .post('http://localhost:9002/coOption/getEventUser', { eventSeq: this.eventSeq })
+          .then((response) => {
+            // this.participants = parsedData
+            //const parsedData = JSON.parse(response.data);
+            // 임의의 데이터를 사용
+            this.participants = response.data
+          })
+          .catch(() => {})
+      }
       const getTaskList = () => {
         axios
           .post('http://localhost:9003/coOption/selectTaskList', { eventSeq: this.eventSeq })
