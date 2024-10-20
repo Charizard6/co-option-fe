@@ -8,8 +8,8 @@
         <input v-model="title" type="text" :readonly="isReadOnly" placeholder="Enter event title" />
       </label>
       <label>
-        Completed Date:
-        <input v-model="completedDate" type="date" :readonly="isReadOnly" />
+        Task DEsc:
+        <input v-model="desc" type="text" :readonly="isReadOnly" placeholder="Enter event Desc" />
       </label>
 
       <div class="button-group">
@@ -43,22 +43,22 @@ export default {
   data() {
     return {
       title: this.initialTitle,
-      completedDate: this.initialCompletedDate
+      desc: this.desc
     }
   },
   watch: {
     initialTitle(val) {
       this.title = val
     },
-    initialCompletedDate(val) {
-      this.completedDate = val
+    desc(val) {
+      this.desc = val
     }
   },
   methods: {
     submitForm() {
-      this.$emit('submit', { title: this.title, completedDate: this.completedDate })
+      this.$emit('submit', { title: this.title, desc: this.desc })
       this.title = ''
-      this.completedDate = ''
+      this.desc = ''
     },
     cancelForm() {
       this.$emit('cancel')
