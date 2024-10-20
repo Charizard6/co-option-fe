@@ -114,9 +114,8 @@ export default {
       axios
         .post('http://localhost:9002/coOption/getEvent', { eid: this.eventId })
         .then(async (response) => {
-          const data = await response.json()
-          this.eventSeq = data.eventSeq
-          this.content = data.eventDesc
+          this.eventSeq = response.data.eventSeq
+          this.content = response.data.eventDesc
           getTaskList()
         })
       // axios
