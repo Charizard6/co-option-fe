@@ -76,6 +76,7 @@ import googleCalendarPlugin from '@fullcalendar/google-calendar'
 import EventPopup from './eventPopup.vue'
 import Multiselect from '@vueform/multiselect'
 import { toRaw } from 'vue'
+import axios from 'axios'
 
 const addOneDay = (dateString, pm) => {
   // 날짜 문자열을 Date 객체로 변환
@@ -91,8 +92,6 @@ const addOneDay = (dateString, pm) => {
 
   return `${year}-${month}-${day}`
 }
-const url =
-  'https://www.googleapis.com/calendar/v3/calendars/2b785f150767e0395fddf90330cbda151ae7e2bd4d9368866d453bf5f3c16761@group.calendar.google.com/events'
 
 export default {
   name: 'CalendarPage',
@@ -198,6 +197,7 @@ export default {
       this.isRightClick = false //우클릭시 화면 비
       const event = clickInfo.event
       this.selectedEvent = {
+        eid: event.extendedProps.eid,
         id: event.id,
         title: event.title,
         description: event.extendedProps.description || '',
@@ -214,12 +214,11 @@ export default {
     },
     async updateEvent() {
       // 수정된 이벤트를 저장
-      const calendarApi = this.$refs.fullCalendar.getApi()
       const updatedEvent = {
         eventNm: this.selectedEvent.title,
         eventDesc: this.selectedEvent.description,
         eventStartDate: this.selectedEvent.start,
-        eventEndDate: addOneDay(this.selectedEvent.end),
+        eventEndDate: this.selectedEvent.end,
         eid: this.selectedEvent.id
       }
 
@@ -236,15 +235,8 @@ export default {
         return false
       }
       alert('이벤트가 수정되었습니다!')
-      calendarApi.getEventById(this.selectedEvent.id).remove()
-      calendarApi.addEvent({
-        id: this.selectedEvent.id,
-        title: this.selectedEvent.title,
-        description: this.selectedEvent.description,
-        start: this.selectedEvent.start,
-        end: addOneDay(this.selectedEvent.end)
-      })
       this.resetForm()
+      this.fetchEventsForCurrentMonth()
     },
     async deleteEvent() {
       //일정 삭제
@@ -306,14 +298,16 @@ export default {
           data.items.forEach((event) => {
             const existingEvent = calendarApi.getEventById(event.id)
             if (!existingEvent) {
-              calendarApi.addEvent({
-                id: new URL(event.htmlLink).searchParams.get('eid'),
+              const addE = {
+                id: event.id,
+                eid: new URL(event.htmlLink).searchParams.get('eid'),
                 title: event.summary,
                 description: event.description,
                 start: event.start.dateTime || event.start.date,
                 end: event.end.dateTime || event.end.date,
                 allDay: !event.start.dateTime
-              })
+              }
+              calendarApi.addEvent(addE)
             }
           })
         })
@@ -326,7 +320,7 @@ export default {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ eid: this.selectedEvent.id })
+        body: JSON.stringify({ eid: this.selectedEvent.eid })
       })
       if (!response.ok) {
         console.error('사용자 정보 가져오기 오류:')
@@ -350,6 +344,16 @@ export default {
         e.preventDefault() // 기본 우클릭 메뉴 방지
         this.isRightClick = true // 우클릭 시 폼 활성화
         this.selectedEventId = event.id // 선택한 이벤트 ID 저장
+        this.selectedEvent = {
+          eid: event.extendedProps.eid,
+          id: event.id,
+          title: event.title,
+          description: event.extendedProps.description || '',
+          start: addOneDay(event.start.toISOString().split('T')[0]),
+          end: event.end
+            ? event.end.toISOString().split('T')[0]
+            : addOneDay(event.start.toISOString().split('T')[0])
+        }
         this.fetchUserData()
       })
 
@@ -365,26 +369,36 @@ export default {
         alert('수신자와 요청 내용을 입력하세요.')
         return
       }
-      const payload = {
-        eid: this.eventSeq,
-        arrUserId: toRaw(this.selectedRecipients).map((el) => el.value),
-        arrUserSeq: toRaw(this.selectedRecipients).map((el) => el.seq),
-        requestNm: this.requestMessage
+      let selectEventSeq = ''
+      let payload = {}
+      axios
+        .post('http://localhost:9002/coOption/getEvent', { eid: this.selectedEvent.eid })
+        .then(async (response) => {
+          selectEventSeq = response.data.eventSeq
+          payload = {
+            eventSeq: selectEventSeq,
+            arrUserId: toRaw(this.selectedRecipients).map((el) => el.value),
+            arrUserSeq: toRaw(this.selectedRecipients).map((el) => el.seq),
+            requestDesc: this.requestMessage
+          }
+          sendRequest(payload)
+        })
+      const sendRequest = async (p) => {
+        const response = await fetch('http://localhost:9004/coOption/addEventRequest', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(p)
+        })
+        if (!response.ok) {
+          console.error('오류:', response.statusText, response.status)
+          alert('일정 참가 요청을 실패했습니다. 관리자에게 문의하세요.')
+          return false
+        }
+        alert('일정 참가 요청을 전송하였습니다.')
+        this.resetForm()
       }
-      const response = await fetch('http://localhost:9004/coOption/addEventRequest', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      })
-      if (!response.ok) {
-        console.error('오류:', response.statusText, response.status)
-        alert('일정 참가 요청을 실패했습니다. 관리자에게 문의하세요.')
-        return false
-      }
-      alert('일정 참가 요청을 전송하였습니다.')
-      this.resetForm()
     }
   },
   mounted() {
