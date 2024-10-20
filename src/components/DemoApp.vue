@@ -326,7 +326,7 @@ export default {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ eventSeq: 1 })
+        body: JSON.stringify({ eid: this.selectedEvent.id })
       })
       if (!response.ok) {
         console.error('사용자 정보 가져오기 오류:')
@@ -335,7 +335,8 @@ export default {
       const mappingJson = await response.json()
       const newArray = mappingJson.map((user) => ({
         value: user.userId,
-        label: user.userName
+        label: user.userName,
+        seq: user.userSeq
       }))
       this.options = newArray
     },
@@ -365,11 +366,12 @@ export default {
         return
       }
       const payload = {
-        eid: this.selectedEventId,
-        recipients: toRaw(this.selectedRecipients).map((el) => el.value),
+        eid: this.eventSeq,
+        arrUserId: toRaw(this.selectedRecipients).map((el) => el.value),
+        arrUserSeq: toRaw(this.selectedRecipients).map((el) => el.seq),
         requestNm: this.requestMessage
       }
-      const response = await fetch('http://localhost:9001/coOption/insertUserRequest', {
+      const response = await fetch('http://localhost:9004/coOption/addEventRequest', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
