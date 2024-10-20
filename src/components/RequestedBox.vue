@@ -20,10 +20,6 @@
       </div>
       <div class="request-detail">
         <h2>요청 상세</h2>
-        <!-- <div> -->
-          <!-- <label for="recipient">수신자</label> -->
-          <!-- <textarea id="recipient" rows="4" v-model="recipient"></textarea> -->
-        <!-- </div> -->
         <div>
           <label for="request-content">요청 내용</label>
           <textarea id="request-content" rows="8" v-model="requestDesc"></textarea>
@@ -59,40 +55,12 @@ export default {
           this.tasks = response.data
         })
         .catch(() => {})
-      // 예시 데이터 사용
-      // 실제 API가 준비되면 이 부분을 axios 요청으로 대체하세요.
-      //this.tasks = [
-      // {
-      //   id: 1,
-      //   title: '- 체중모임 작담모임',
-      //   sender: 'Choi',
-      //   recipient: '홍길동',
-      //   requestContent: '요청 상세 내용 1이 여기에 표시됩니다.'
-      // },
-      // {
-      //   id: 2,
-      //   title: '- 프로젝트 관리 포토타입 제작',
-      //   sender: 'Choi',
-      //   recipient: '김철수',
-      //   requestContent: '요청 상세 내용 2이 여기에 표시됩니다.'
-      // },
-      // {
-      //   id: 3,
-      //   title: '- 업무 보안지침서 검토 Task 추가 의 건',
-      //   sender: 'Choi',
-      //   recipient: '이영희',
-      //   requestContent: '요청 상세 내용 3이 여기에 표시됩니다.'
-      // }
-      //]
-      // 첫 번째 태스크를 기본으로 선택
       if (this.tasks.length > 0) {
         this.selectTask(this.tasks[0])
       }
     },
     selectTask(task) {
-      // 선택된 태스크의 ID와 상세 내용을 설정합니다.
       this.selectedTaskId = task.reqeustSeq
-      // this.recipient = task.recipient
       this.requestDesc = task.requestDesc
     },
     rejectRequest() {
