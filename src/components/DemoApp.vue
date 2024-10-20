@@ -307,7 +307,7 @@ export default {
             const existingEvent = calendarApi.getEventById(event.id)
             if (!existingEvent) {
               calendarApi.addEvent({
-                id: event.id,
+                id: new URL(event.htmlLink).searchParams.get('eid'),
                 title: event.summary,
                 description: event.description,
                 start: event.start.dateTime || event.start.date,
