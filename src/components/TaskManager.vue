@@ -94,6 +94,7 @@ export default {
   },
   data() {
     return {
+      eventSeq: null,
       progress: 30,
       participants: [],
       content: '',
@@ -106,11 +107,20 @@ export default {
   },
   methods: {
     fetchData() {
-      // const url = new URL(window.location.href)
-      // this.eventId = url.searchParams.get('eid')
-      // // 서버에서 참가자 데이터를 가져오는 비동기 통신 (예시로 실제 통신 대신 임시 데이터 추가)
+      const url = new URL(window.location.href)
+      this.eventId = url.searchParams.get('eid')
+      // 서버에서 참가자 데이터를 가져오는 비동기 통신 (예시로 실제 통신 대신 임시 데이터 추가)
+
+      axios
+        .post('http://localhost:9002/coOption/getEvent', { eid: this.eventId })
+        .then(async (response) => {
+          const data = await response.json()
+          this.eventSeq = data.eventSeq
+          this.content = data.eventDesc
+          getTaskList()
+        })
       // axios
-      //   .post('/api/participants', { eventSeq: this.eventId })
+      //   .post('/api/participants', { eventSeq: this.eventSeq })
       //   .then((response) => {
       //     // this.participants = parsedData
       //     //const parsedData = JSON.parse(response.data);
@@ -125,39 +135,15 @@ export default {
       //     ]
       //   })
       //   .catch(() => {})
-
-      // 서버에서 내용을 가져오는 비동기 통신 (예시로 실제 통신 대신 임시 데이터 추가)
-      axios
-        .get('/api/content', { eventSeq: this.eventId })
-        .then((response) => {
-          // this.content = parsedData
-          //const parsedData = JSON.parse(response.data);
-          this.content = '캘린더 등록테스트입니다.'
-        })
-        .catch(() => {})
-
-      axios
-        .post('http://localhost:9003/coOption/selectTaskList', { eventSeq: 1 })
-        .then((response) => {
-          this.personalTasks = response.data.filter((task) => task.taskType === 'N')
-          this.sharedTasks = response.data.filter((task) => task.taskType === 'Y')
-          //const parsedData = JSON.parse(response.data);
-          // this.personalTasks = [
-          //   {
-          //     id: 1,
-          //     name: '무신사 둘러보기',
-          //     deadline: '2023.2.9',
-          //     completed: false,
-          //   },
-          //   {
-          //     id: 2,
-          //     name: '미용실 예약',
-          //     deadline: '2023.2.5',
-          //     completed: true,
-          //   }
-          // ]
-        })
-        .catch(() => {})
+      const getTaskList = () => {
+        axios
+          .post('http://localhost:9003/coOption/selectTaskList', { eventSeq: this.eventSeq })
+          .then((response) => {
+            this.personalTasks = response.data.filter((task) => task.taskType === 'N')
+            this.sharedTasks = response.data.filter((task) => task.taskType === 'Y')
+          })
+          .catch(() => {})
+      }
     },
     addTask(type) {
       this.showEventPopup = true
@@ -166,7 +152,7 @@ export default {
     handleEventPopupSubmit(data) {
       const newTask = {
         //이벤트 아이디 가데이터
-        eventSeq: 1,
+        eventSeq: this.eventSeq,
         taskNm: data.title,
         taskDate: this.getNextDay(data.completedDate),
         taskType: this.currentTaskType
