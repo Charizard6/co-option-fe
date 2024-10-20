@@ -6,7 +6,8 @@ export default createStore({
   state: {
     user: {
       userId: null,
-      userName: null
+      userName: null,
+      userSeq: null
     }
   },
   mutations: {
@@ -21,6 +22,9 @@ export default createStore({
   getters: {
     getUser: (state) => {
       return state.user.userId
+    },
+    getUserSeq: (state) => {
+      return state.user.userSeq
     }
   },
   plugins: [
