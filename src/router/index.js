@@ -17,13 +17,13 @@ const routes = [
     path: '/requested-box',
     name: 'RequestedBox',
     component: RequestedBox,
-    auth: true
+    meta: { auth: true }
   },
   {
     path: '/calendar-page',
     name: 'CalendarPage',
     component: CalendarPage,
-    auth: true
+    meta: { auth: true }
   },
   {
     path: '/login-form',
@@ -39,7 +39,7 @@ const routes = [
     path: '/task-manager',
     name: 'TaskManager',
     component: TaskManager,
-    auth: true
+    meta: { auth: true }
   }
 ]
 
