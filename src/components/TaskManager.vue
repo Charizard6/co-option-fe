@@ -137,7 +137,7 @@ export default {
         axios
           .post('http://localhost:9003/coOption/selectTaskList', {
             eventSeq: this.eventSeq,
-            taskType: shared ? 'share' : 'personal',
+            taskType: shared ? 'Y' : 'N',
             ownerUserSeq: this.getUserSeq
           })
           .then((response) => {
