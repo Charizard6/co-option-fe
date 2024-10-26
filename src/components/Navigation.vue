@@ -39,6 +39,9 @@ export default {
 </script>
 
 <style>
+
+/* Google Fonts에서 Ubuntu 폰트 불러오기 */
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap');
 /* 네비게이션 바 기본 스타일 */
 .navbar {
   background-color: white;
@@ -56,8 +59,10 @@ export default {
 .logo {
   transition: all 0.3s;
   font-size: 24px;
-  font-weight: bold;
+  font-weight: 100;
+  font-family: 'Ubuntu', sans-serif; /* Ubuntu 폰트 적용 */
   color: black;
+  text-decoration: underline; /* 기본 상태에서 밑줄 추가 */
   margin-bottom: 5px;
 }
 
@@ -74,7 +79,7 @@ export default {
   width: 100%;
   transition: all 0.3s;
   opacity: 0; /* 초기 상태에서 보이지 않도록 설정 */
-  transform: tran slateY(-50%); /* 위쪽에 숨겨둠 */
+  transform: translateY(-50%); /* 위쪽에 숨겨둠 */
 }
 
 .nav-links button {
@@ -92,9 +97,9 @@ export default {
 
 .navbar:hover .logo {
   transition: all 0.3s;
-  font-size: 32px;
-  font-weight: bold;
-  color: black;
+  font-size: 36px;
+  /* font-weight: bold; */
+  /* color: black; */
   margin-bottom: 5px;
 }
 
@@ -112,9 +117,10 @@ export default {
   color: rgb(76, 76, 76);
   font-size: 22px;
   cursor: pointer;
+  
 }
 
-/* 버튼 호버 시 밑줄 추가 */
+/* 버튼 호버 시 스타일 유지 */
 .nav-links button:hover {
   background: none;
   text-decoration: underline;
