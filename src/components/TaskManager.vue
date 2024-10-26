@@ -15,7 +15,12 @@
         <h2>참가자</h2>
         <div class="participants-scrollable">
           <div class="participant" v-for="participant in participants" :key="participant.id">
-            <input type="checkbox" v-model="participant.selected" />
+            <input
+              type="radio"
+              name="selectedParticipant"
+              :value="participant.userSeq"
+              v-model="selectedParticipantSeq"
+            />
             {{ participant.userName }} - {{ participant.userMail }}
           </div>
         </div>
@@ -106,7 +111,8 @@ export default {
       eventId: '',
       showEventPopup: false,
       currentTaskType: '', // 'shared' =Y 또는 'personal' =N 값을 가짐
-      currentRequestType: ''
+      currentRequestType: '',
+      selectedParticipantSeq: null
     }
   },
   methods: {
@@ -129,10 +135,7 @@ export default {
         axios
           .post('http://localhost:9002/coOption/getEventUser', { eventSeq: this.eventSeq })
           .then((response) => {
-            this.participants = response.data.map((participant) => ({
-              ...participant,
-              selected: false
-            }))
+            this.participants = response.data
           })
           .catch(() => {})
       }
@@ -187,18 +190,15 @@ export default {
           requestType: 'event',
           regId: this.getUser,
           updId: this.getUser,
-          selectedUserSeqs: this.participants
-            .filter((participant) => participant.selected)
-            .map((participant) => participant.userSeq)
+          selectedUserSeq: this.selectedParticipantSeq
         }
       }
       axios
         .post(url, newTask)
         .then(() => {
           this.fetchData()
-          this.participants.forEach((participant) => {
-            participant.selected = false
-          })
+          // 선택 상태 초기화
+          this.selectedParticipantSeq = null
         })
         .catch((error) => console.error(error))
         .finally(() => {
@@ -210,10 +210,9 @@ export default {
       this.showEventPopup = false
     },
     requestTask(type) {
-      const selectedParticipants = this.participants.filter((participant) => participant.selected)
-
-      if (selectedParticipants.length == 0) {
-        alert('참가자를 선택해주세요.')
+      // 선택된 참가자가 있는지 확인
+      if (!this.selectedParticipantSeq) {
+        alert('참가자를 선택해주세요')
         return false
       }
       this.showEventPopup = true
