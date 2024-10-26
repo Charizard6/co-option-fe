@@ -117,7 +117,8 @@ export default {
         .then(async (response) => {
           this.eventSeq = response.data.eventSeq
           this.content = response.data.eventDesc
-          getTaskList()
+          getTaskList(true)
+          getTaskList(false)
           getUserList()
         })
       const getUserList = () => {
@@ -131,12 +132,17 @@ export default {
           })
           .catch(() => {})
       }
-      const getTaskList = () => {
+      const getTaskList = (shared) => {
         axios
-          .post('http://localhost:9003/coOption/selectTaskList', { eventSeq: this.eventSeq })
+          .post('http://localhost:9003/coOption/selectTaskList', {
+            eventSeq: this.eventSeq,
+            taskType: shared ? 'share' : 'personal',
+            ownerUserSeq: this.getUserSeq
+          })
           .then((response) => {
-            this.personalTasks = response.data.filter((task) => task.taskType === 'N')
-            this.sharedTasks = response.data.filter((task) => task.taskType === 'Y')
+            shared
+              ? (this.sharedTasks = response.data.filter((task) => task.taskType === 'Y'))
+              : (this.personalTasks = response.data.filter((task) => task.taskType === 'N'))
           })
           .catch(() => {})
       }
@@ -144,6 +150,7 @@ export default {
     addTask(type) {
       this.showEventPopup = true
       this.currentTaskType = type
+      this.currentRequestType = 'task'
     },
     handleEventPopupSubmit(data) {
       const newTask = {
