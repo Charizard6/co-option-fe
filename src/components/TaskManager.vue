@@ -11,9 +11,11 @@
     <div class="main-layout">
       <!-- 좌측: 참가자와 내용 -->
       <div class="left-section">
+        <!-- 수정된 참가자 목록 -->
         <h2>참가자</h2>
         <div class="participants-scrollable">
           <div class="participant" v-for="participant in participants" :key="participant.id">
+            <input type="checkbox" v-model="participant.selected" />
             {{ participant.userName }} - {{ participant.userMail }}
           </div>
         </div>
@@ -127,10 +129,10 @@ export default {
         axios
           .post('http://localhost:9002/coOption/getEventUser', { eventSeq: this.eventSeq })
           .then((response) => {
-            // this.participants = parsedData
-            //const parsedData = JSON.parse(response.data);
-            // 임의의 데이터를 사용
-            this.participants = response.data
+            this.participants = response.data.map((participant) => ({
+              ...participant,
+              selected: false
+            }))
           })
           .catch(() => {})
       }
@@ -152,9 +154,6 @@ export default {
         axios
           .post('http://localhost:9003/coOption/getTaskCompletionRate', { eventSeq: this.eventSeq })
           .then((response) => {
-            // this.participants = parsedData
-            //const parsedData = JSON.parse(response.data);
-            // 임의의 데이터를 사용
             this.progress = response.data.completionRate
           })
           .catch(() => {})
@@ -187,13 +186,19 @@ export default {
           requestDesc: data.desc,
           requestType: 'event',
           regId: this.getUser,
-          updId: this.getUser
+          updId: this.getUser,
+          selectedUserSeqs: this.participants
+            .filter((participant) => participant.selected)
+            .map((participant) => participant.userSeq)
         }
       }
       axios
         .post(url, newTask)
         .then(() => {
           this.fetchData()
+          this.participants.forEach((participant) => {
+            participant.selected = false
+          })
         })
         .catch((error) => console.error(error))
         .finally(() => {
@@ -205,6 +210,12 @@ export default {
       this.showEventPopup = false
     },
     requestTask(type) {
+      const selectedParticipants = this.participants.filter((participant) => participant.selected)
+
+      if (selectedParticipants.length == 0) {
+        alert('참가자를 선택해주세요.')
+        return false
+      }
       this.showEventPopup = true
       this.currentTaskType = type
       this.currentRequestType = 'request'
