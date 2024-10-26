@@ -13,13 +13,16 @@
         <input v-model="userPwd" type="password" placeholder="비밀번호를 입력하세요" />
       </div>
 
-      <button @click="submitForm">로그인</button>
+      <div class="button-group">
+        <button @click="submitForm" class="login-button">로그인</button>
+        <button @click="goToSignup" class="signup-button">회원가입</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex'
+import { mapMutations } from 'vuex'
 
 export default {
   name: 'loginForm',
@@ -56,6 +59,9 @@ export default {
         console.error('로그인 요청 중 오류 발생:', error)
         alert('로그인 요청 중 오류가 발생했습니다.')
       }
+    },
+    goToSignup() {
+      this.$router.push('/signup-form')
     }
   }
 }
@@ -103,8 +109,13 @@ export default {
   box-sizing: border-box;
 }
 
-button {
-  width: 100%;
+.button-group {
+  display: flex;
+  gap: 10px; /* 버튼 간격 조절 */
+}
+
+.login-button {
+  flex: 1;
   padding: 10px;
   background-color: #4caf50;
   color: white;
@@ -114,7 +125,22 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+.login-button:hover {
   background-color: #45a049;
+}
+
+.signup-button {
+  flex: 1;
+  padding: 10px;
+  background-color: #007bff; /* 파란색으로 설정 */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.signup-button:hover {
+  background-color: #0069d9; /* 호버 시 더 진한 파란색 */
 }
 </style>
