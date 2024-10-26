@@ -187,7 +187,7 @@ export default {
           eventSeq: this.eventSeq,
           requestNm: data.title,
           requestDesc: data.desc,
-          requestType: 'event',
+          requestType: 'task',
           regId: this.getUser,
           updId: this.getUser,
           selectedUserSeq: this.selectedParticipantSeq
