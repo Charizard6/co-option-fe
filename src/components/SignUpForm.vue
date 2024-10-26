@@ -38,30 +38,9 @@ export default {
     }
   },
   methods: {
-    checkEmail() {
-      // 이메일 유효성 확인 요청 (예시)
-      fetch('https://example.com/api/validate-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email: this.email })
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.valid) {
-            alert('이메일이 유효합니다.')
-          } else {
-            alert('이미 사용 중인 이메일입니다.')
-          }
-        })
-        .catch((error) => {
-          console.error('이메일 확인 오류:', error)
-        })
-    },
     submitSignup() {
       // 회원가입 요청 (예시)
-      fetch('https://localhost:8080/create-user', {
+      fetch('https://localhost:9001/coOption/createUser', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -69,7 +48,6 @@ export default {
         body: JSON.stringify({
           userName: this.name,
           userId: this.id,
-          userMail: this.email,
           userPwd: this.password
         })
       })
@@ -77,6 +55,7 @@ export default {
         .then((data) => {
           if (data.success) {
             alert('회원가입이 완료되었습니다.')
+            this.$router.push('/')
           } else {
             alert('회원가입에 실패했습니다.')
           }
