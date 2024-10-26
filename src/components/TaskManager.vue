@@ -87,6 +87,7 @@
 <script>
 import axios from 'axios'
 import taskPopup from './taskPopup.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -200,6 +201,9 @@ export default {
 
       return `${year}-${month}-${day}`
     }
+  },
+  computed: {
+    ...mapGetters(['getUser', 'getUserSeq'])
   },
   created() {
     // 화면 로드 전에 하드코딩된 데이터를 불러옴
