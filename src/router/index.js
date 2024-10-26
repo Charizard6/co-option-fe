@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../components/Home.vue'
 import RequestedBox from '../components/RequestedBox.vue'
 import CalendarPage from '../components/DemoApp.vue'
 import LoginForm from '@/components/LoginForm.vue'
@@ -10,8 +9,9 @@ import store from '@/store/index.js'
 const routes = [
   {
     path: '/',
-    name: 'HomeVue',
-    component: Home
+    name: 'Home',
+    component: CalendarPage,
+    meta: { auth: true }
   },
   {
     path: '/requested-box',
