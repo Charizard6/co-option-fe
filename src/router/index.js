@@ -5,6 +5,7 @@ import LoginForm from '@/components/LoginForm.vue'
 import SignUpForm from '@/components/SignUpForm.vue'
 import TaskManager from '@/components/TaskManager.vue'
 import store from '@/store/index.js'
+import AccountApp from '@/components/AccountApp.vue'
 
 const routes = [
   {
@@ -39,6 +40,12 @@ const routes = [
     path: '/task-manager',
     name: 'TaskManager',
     component: TaskManager,
+    meta: { auth: true }
+  },
+  {
+    path: '/account-app',
+    name: 'AccountApp',
+    component: AccountApp,
     meta: { auth: true }
   }
 ]
