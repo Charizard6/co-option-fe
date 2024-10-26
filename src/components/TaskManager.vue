@@ -168,7 +168,7 @@ export default {
     handleEventPopupSubmit(data) {
       let url = ''
       let newTask = {}
-      if (this.currentTaskType == 'task') {
+      if (this.currentTaskType == 'Y') {
         url = 'http://localhost:9003/coOption/addTask'
         newTask = {
           //이벤트 아이디 가데이터
@@ -189,18 +189,17 @@ export default {
           regId: this.getUser,
           updId: this.getUser
         }
-
-        axios
-          .post(url, newTask)
-          .then(() => {
-            this.fetchData()
-          })
-          .catch((error) => console.error(error))
-          .finally(() => {
-            this.showEventPopup = false
-            this.fetchData()
-          })
       }
+      axios
+        .post(url, newTask)
+        .then(() => {
+          this.fetchData()
+        })
+        .catch((error) => console.error(error))
+        .finally(() => {
+          this.showEventPopup = false
+          this.fetchData()
+        })
     },
     handleEventPopupCancel() {
       this.showEventPopup = false
