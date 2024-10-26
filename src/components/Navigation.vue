@@ -10,15 +10,11 @@
       <li><button @click="goToTaskManager">업무 관리자</button></li>
       <li><button @click="goToAccount">계정</button></li>
     </ul>
-
-    <!-- 로그아웃 버튼 -->
-    <button v-if="isLoggedIn" @click="handleLogout" class="logout-button">로그아웃</button>
   </nav>
 </template>
 
 <script>
 import { useRouter } from 'vue-router'
-import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'NavigationBar',
@@ -38,18 +34,6 @@ export default {
       goToSignUpForm,
       goToTaskManager
     }
-  },
-  methods: {},
-  computed: {
-    ...mapGetters(['isLoggedIn'])
-  },
-  // eslint-disable-next-line no-dupe-keys
-  methods: {
-    async handleLogout() {
-      await this.$store.dispatch('logout')
-      this.$router.push('/login-form') // 라우터 이동 처리
-    },
-    ...mapActions(['logout'])
   }
 }
 </script>
