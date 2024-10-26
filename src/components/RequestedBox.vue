@@ -8,12 +8,14 @@
             <tr>
               <th>제목</th>
               <th>상신자</th>
+              <th>요청 타입</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="task in tasks" :key="task.reqeustSeq" @click="selectTask(task)">
               <td>{{ task.requestNm }}</td>
               <td>{{ task.regId }}</td>
+              <td>{{ task.reqeustType }}</td>
             </tr>
           </tbody>
         </table>
