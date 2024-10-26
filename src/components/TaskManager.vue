@@ -103,7 +103,8 @@ export default {
       personalTasks: [],
       eventId: '',
       showEventPopup: false,
-      currentTaskType: '' // 'shared' =Y 또는 'personal' =N 값을 가짐
+      currentTaskType: '', // 'shared' =Y 또는 'personal' =N 값을 가짐
+      currentRequestType: ''
     }
   },
   methods: {
@@ -153,24 +154,41 @@ export default {
       this.currentRequestType = 'task'
     },
     handleEventPopupSubmit(data) {
-      const newTask = {
-        //이벤트 아이디 가데이터
-        eventSeq: this.eventSeq,
-        taskNm: data.title,
-        taskDate: data.desc,
-        taskType: this.currentTaskType
-      }
+      let url = ''
+      let newTask = {}
+      if (this.currentTaskType == 'task') {
+        url = 'http://localhost:9003/coOption/addTask'
+        newTask = {
+          //이벤트 아이디 가데이터
+          eventSeq: this.eventSeq,
+          taskNm: data.title,
+          taskDesc: data.desc,
+          taskType: this.currentTaskType,
+          approvedYn: this.currentTaskType == 'N' ? 'Y' : 'N'
+        }
+      } else {
+        url = 'http://localhost:9004/coOption/addTaskRequest'
+        newTask = {
+          //이벤트 아이디 가데이터
+          eventSeq: this.eventSeq,
+          requestNm: data.title,
+          requestDesc: data.desc,
+          requestType: 'event',
+          regId: this.getUser,
+          updId: this.getUser
+        }
 
-      axios
-        .post(`http://localhost:9003/coOption/addTask`, newTask)
-        .then(() => {
-          this.fetchData()
-        })
-        .catch((error) => console.error(error))
-        .finally(() => {
-          this.showEventPopup = false
-          this.fetchData()
-        })
+        axios
+          .post(url, newTask)
+          .then(() => {
+            this.fetchData()
+          })
+          .catch((error) => console.error(error))
+          .finally(() => {
+            this.showEventPopup = false
+            this.fetchData()
+          })
+      }
     },
     handleEventPopupCancel() {
       this.showEventPopup = false
@@ -178,6 +196,7 @@ export default {
     requestTask(type) {
       this.showEventPopup = true
       this.currentTaskType = type
+      this.currentRequestType = 'request'
     },
     toggleTaskCompletion(task) {
       // 완료 상태에 따라 완료 혹은 미완료 처리 (서버로 비동기 전송)
