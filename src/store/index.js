@@ -1,4 +1,3 @@
-// store/index.js
 import { createStore } from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 
@@ -13,19 +12,27 @@ export default createStore({
   mutations: {
     setUser(state, _user) {
       state.user = _user
-      //localStorage.setItem('user', JSON.stringify(_user));
     },
     clearUser(state) {
-      state.user = null
+      state.user = {
+        userId: null,
+        userName: null,
+        userSeq: null
+      }
+    }
+  },
+  actions: {
+    logout({ commit }, router) {
+      commit('clearUser')
+      sessionStorage.clear() // 세션 스토리지 초기화
     }
   },
   getters: {
-    getUser: (state) => {
-      return state.user.userId
+    isLoggedIn: (state) => {
+      return state.user.userId !== null
     },
-    getUserSeq: (state) => {
-      return state.user.userSeq
-    }
+    getUser: (state) => state.user.userId,
+    getUserSeq: (state) => state.user.userSeq
   },
   plugins: [
     createPersistedState({
