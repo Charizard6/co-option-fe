@@ -96,7 +96,7 @@ export default {
   data() {
     return {
       eventSeq: null,
-      progress: 30,
+      progress: null,
       participants: [],
       content: '',
       sharedTasks: [],
@@ -121,6 +121,7 @@ export default {
           getTaskList(true)
           getTaskList(false)
           getUserList()
+          getCompleteRate()
         })
       const getUserList = () => {
         axios
@@ -144,6 +145,17 @@ export default {
             shared
               ? (this.sharedTasks = response.data.filter((task) => task.taskType === 'Y'))
               : (this.personalTasks = response.data.filter((task) => task.taskType === 'N'))
+          })
+          .catch(() => {})
+      }
+      const getCompleteRate = () => {
+        axios
+          .post('http://localhost:9003/coOption/getTaskCompletionRate', { eventSeq: this.eventSeq })
+          .then((response) => {
+            // this.participants = parsedData
+            //const parsedData = JSON.parse(response.data);
+            // 임의의 데이터를 사용
+            this.progress = response.data.completionRate
           })
           .catch(() => {})
       }
