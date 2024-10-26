@@ -12,6 +12,9 @@ export default {
   name: 'App',
   components: {
     NavigationBar
+  },
+  mounted() {
+    this.$store.dispatch('startSessionTimer')
   }
 }
 </script>
