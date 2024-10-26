@@ -29,7 +29,7 @@ export default {
     const goToCalendar = () => router.push('/calendar-page')
     const goToAccount = () => router.push('/account-app')
     const goToSignUpForm = () => router.push('/signup-form')
-    const goToTaskManager = () => router.push('/task-manager')
+    const goToTaskManager = () => alert(`공유캘린더에서 일정을 '더블클릭'해주세요.`)
 
     return {
       goToRequestedBox,
