@@ -15,7 +15,7 @@
             <tr v-for="task in tasks" :key="task.reqeustSeq" @click="selectTask(task)">
               <td>{{ task.requestNm }}</td>
               <td>{{ task.regId }}</td>
-              <td>{{ task.reqeustType }}</td>
+              <td>{{ task.requestType }}</td>
             </tr>
           </tbody>
         </table>
