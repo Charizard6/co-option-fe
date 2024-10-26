@@ -50,6 +50,7 @@ export default {
 .info-container {
   display: flex;
   gap: 20px;
+  margin-top: 10%;
 }
 
 .info-section {
