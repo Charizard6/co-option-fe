@@ -189,7 +189,7 @@ export default {
 
     handleEventDblClick(clickInfo) {
       const event = clickInfo.event
-      const path = `/task-manager/${event.id}`
+      const path = `/task-manager/${event.extendedProps.eid}`
       this.$router.push(path)
     },
 
@@ -360,7 +360,7 @@ export default {
       // **더블클릭 이벤트 처리 추가**
       eventElement.addEventListener('dblclick', (e) => {
         e.preventDefault() // 기본 동작 방지
-        const path = `/task-manager/?eid=${event.id}`
+        const path = `/task-manager/?eid=${event.extendedProps.eid}`
         this.$router.push(path)
       })
     },
