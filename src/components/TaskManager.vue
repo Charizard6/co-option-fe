@@ -190,7 +190,7 @@ export default {
           requestType: 'task',
           regId: this.getUser,
           updId: this.getUser,
-          selectedUserSeq: this.selectedParticipantSeq
+          userSeq: this.selectedParticipantSeq
         }
       }
       axios
