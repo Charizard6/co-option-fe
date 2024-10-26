@@ -4,11 +4,11 @@
       <h2>내 정보</h2>
       <div class="info-item">
         <label>이름:</label>
-        <span>{{ userInfo.name }}</span>
+        <span>{{ userInfo.userName }}</span>
       </div>
       <div class="info-item">
         <label>ID:</label>
-        <span>{{ userInfo.id }}</span>
+        <span>{{ userInfo.userId }}</span>
       </div>
     </div>
 
@@ -24,16 +24,24 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
       userInfo: {
-        name: '홍길동',
-        id: 'user123'
+        userName: '',
+        userId: ''
       },
       googleCalendarUrl:
         'https://calendar.google.com/calendar/u/0?cid=MmI3ODVmMTUwNzY3ZTAzOTVmZGRmOTAzMzBjYmRhMTUxYWU3ZTJiZDRkOTM2ODg2NmQ0NTNiZjVmM2MxNjc2MUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t'
     }
+  },
+  mounted() {
+    this.userInfo.userName = this.getUserName
+    this.userInfo.userId = this.getUser
+  },
+  computed: {
+    ...mapGetters(['getUser', 'getUserSeq', 'getUserName'])
   }
 }
 </script>

@@ -32,7 +32,8 @@ export default createStore({
       return state.user.userId !== null
     },
     getUser: (state) => state.user.userId,
-    getUserSeq: (state) => state.user.userSeq
+    getUserSeq: (state) => state.user.userSeq,
+    getUserName: (state) => state.user.userName
   },
   plugins: [
     createPersistedState({
