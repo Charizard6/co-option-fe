@@ -15,13 +15,6 @@
           <button class="email-check-button" @click="checkEmail">아이디 확인</button>
         </div>
       </div>
-      <div class="form-group">
-        <label>이메일</label>
-        <div class="email-check-wrapper">
-          <input v-model="email" type="email" placeholder="이메일을 입력하세요" />
-          <button class="email-check-button" @click="checkEmail">이메일 확인</button>
-        </div>
-      </div>
 
       <div class="form-group">
         <label>비밀번호</label>
