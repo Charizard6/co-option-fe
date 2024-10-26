@@ -178,7 +178,8 @@ export default {
           taskNm: data.title,
           taskDesc: data.desc,
           taskType: this.currentTaskType,
-          approvedYn: this.currentTaskType == 'N' ? 'Y' : 'N'
+          approvedYn: this.currentTaskType == 'N' ? 'Y' : 'N',
+          ...(this.currentTaskType == 'N' && { ownerUserSeq: this.getUserSeq })
         }
       } else {
         url = 'http://localhost:9004/coOption/addTaskRequest'
