@@ -66,7 +66,7 @@
                 />
                 <div class="task-info">
                   <p class="task-title">{{ task.taskNm }}</p>
-                  <p class="task-status">{{ task.taskDate.substring(0, 10) }}</p>
+                  <p class="task-status">{{ task.taskDesc }}</p>
                 </div>
               </div>
             </li>
