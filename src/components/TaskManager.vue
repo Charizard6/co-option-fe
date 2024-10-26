@@ -170,7 +170,7 @@ export default {
     handleEventPopupSubmit(data) {
       let url = ''
       let newTask = {}
-      if (this.currentTaskType == 'Y') {
+      if (this.currentTaskType == 'task') {
         url = 'http://localhost:9003/coOption/addTask'
         newTask = {
           //이벤트 아이디 가데이터
