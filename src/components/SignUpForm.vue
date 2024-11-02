@@ -40,7 +40,7 @@ export default {
   methods: {
     submitSignup() {
       // 회원가입 요청 (예시)
-      fetch('https://localhost:9001/coOption/createUser', {
+      fetch('http://localhost:9001/coOption/createUser', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
