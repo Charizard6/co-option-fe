@@ -38,31 +38,28 @@ export default {
     }
   },
   methods: {
-    submitSignup() {
-      // 회원가입 요청 (예시)
-      fetch('http://localhost:9001/coOption/createUser', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          userName: this.name,
-          userId: this.id,
-          userPwd: this.password
+    async submitSignup() {
+      try {
+        const response = await fetch('http://localhost:9001/coOption/createUser', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userName: this.name,
+            userId: this.id,
+            userPwd: this.password
+          })
         })
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
-            alert('회원가입이 완료되었습니다.')
-            this.$router.push('/')
-          } else {
-            alert('회원가입에 실패했습니다.')
-          }
-        })
-        .catch((error) => {
-          console.error('회원가입 오류:', error)
-        })
+        if (response.ok) {
+          alert('가입 성공')
+          this.$router.push('/login-form')
+        } else {
+          alert('가입 실패')
+        }
+      } catch (error) {
+        alert('rkdlq 요청 중 오류가 발생했습니다.')
+      }
     }
   }
 }
