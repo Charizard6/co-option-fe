@@ -24,10 +24,14 @@
         </div>
       </label>
       <label>
-        요청내용:
-        <textarea v-model="requestMessage" placeholder="요청 내용을 입력하세요"></textarea>
+        요청제목:
+        <textarea v-model="requestMessageNm" placeholder="요청 제목을 입력하세요"></textarea>
       </label>
-      <button @click="sendRequest">상신</button>
+      <label>
+        요청내용:
+        <textarea v-model="requestMessageDesc" placeholder="요청 내용을 입력하세요"></textarea>
+      </label>
+      <button @click="getEventInfo">상신</button>
     </div>
 
     <div class="event-details-sidebar" v-if="!isRightClick">
@@ -142,7 +146,8 @@ export default {
       // ], 기본 멀티셀렉트는 객체 배열이되지만 지금 추가한거는 단일
       value: null,
       options: [],
-      requestMessage: '',
+      requestMessageNm: '',
+      requestMessageDesc: '',
       selectedEventId: null // 선택된 이벤트 ID
     }
   },
@@ -366,9 +371,13 @@ export default {
         this.$router.push(path)
       })
     },
-    async sendRequest() {
-      if (this.selectedRecipients.length === 0 || this.requestMessage.trim() === '') {
-        alert('수신자와 요청 내용을 입력하세요.')
+    async getEventInfo() {
+      if (
+        this.selectedRecipients.length === 0 ||
+        this.requestMessageDesc.trim() === '' ||
+        this.requestMessageNm.trim() === ''
+      ) {
+        alert('수신자와 요청 제목, 내용을 입력하세요.')
         return
       }
       let selectEventSeq = ''
@@ -381,7 +390,8 @@ export default {
             eventSeq: selectEventSeq,
             arrUserId: toRaw(this.selectedRecipients).map((el) => el.value),
             arrUserSeq: toRaw(this.selectedRecipients).map((el) => el.seq),
-            requestDesc: this.requestMessage
+            requestNm: this.requestMessageNm,
+            requestDesc: this.requestMessageDesc
           }
           sendRequest(payload)
         })
