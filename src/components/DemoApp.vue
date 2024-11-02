@@ -76,6 +76,7 @@ import googleCalendarPlugin from '@fullcalendar/google-calendar'
 import EventPopup from './eventPopup.vue'
 import Multiselect from '@vueform/multiselect'
 import { toRaw } from 'vue'
+import { mapGetters } from 'vuex'
 import axios from 'axios'
 
 const addOneDay = (dateString, pm) => {
@@ -161,7 +162,8 @@ export default {
           eventNm: eventData.title,
           eventDesc: eventData.description,
           eventStartDate: startStr,
-          eventEndDate: addOneDay(endStr, false)
+          eventEndDate: addOneDay(endStr, false),
+          userSeq: this.getUserSeq
         }
 
         const response = await fetch('http://localhost:9002/coOption/createEvent', {
@@ -400,6 +402,9 @@ export default {
         this.resetForm()
       }
     }
+  },
+  computed: {
+    ...mapGetters(['getUser', 'getUserSeq'])
   },
   mounted() {
     const initializeTokenClient = () => {
